@@ -182,7 +182,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
         {/* Printable Area */}
         <div id="printable-invoice" className="flex-1 overflow-auto flex flex-col p-8 font-sans text-black print:p-6 bg-white">
           <div className="text-center mb-3 print:pt-4">
-            <div className="text-lg font-bold uppercase">NASA FRESH MART <span className="text-xs font-normal">(001634825-A)</span></div>
+            <div className="text-lg font-bold uppercase">NJ FRESH & FROZEN SDN BHD <span className="text-xs font-normal">(001634825-A)</span></div>
             <p className="mt-1 text-[11px]">NO 8G, JLN 3/2 PANDAN JAYA, 55100 KUALA LUMPUR.</p>
             <p className="text-[11px]">Tel : 0392856786</p>
           </div>
