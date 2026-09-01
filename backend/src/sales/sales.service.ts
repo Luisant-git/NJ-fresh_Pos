@@ -8,6 +8,10 @@ export class SalesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSaleDto: CreateSaleDto, userId: number) {
+    if (!userId || userId <= 0) {
+      throw new BadRequestException('Invalid user ID. If you are using the developer login, please ensure you have run the database seed (npm run seed) to create a valid default user.');
+    }
+
     // Execute in a transaction to guarantee data integrity between sale and stock ledger
     return this.prisma.$transaction(async (tx) => {
       
