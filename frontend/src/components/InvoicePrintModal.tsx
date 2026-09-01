@@ -73,26 +73,16 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
     }
     setIsSharing(true);
     try {
-      // Clone element and apply A4 fixed layout for PDF only (modal untouched)
-      const clone = element.cloneNode(true) as HTMLElement;
-      clone.style.cssText = 'width:794px;height:1123px;position:relative;overflow:hidden;background:white;padding:32px;box-sizing:border-box;font-family:Arial,sans-serif;';
-      // Force bottom section to absolute bottom in PDF clone
-      const bottomDiv = clone.querySelector('.mt-auto') as HTMLElement | null;
-      if (bottomDiv) {
-        bottomDiv.style.cssText = 'position:absolute;bottom:32px;left:32px;right:32px;';
-      }
-      document.body.appendChild(clone);
       const blob: Blob = await html2pdf()
         .set({
           margin: 0,
           filename: `Invoice_${invoiceNo}.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false, width: 794, windowWidth: 794 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         })
-        .from(clone)
+        .from(element)
         .outputPdf('blob');
-      document.body.removeChild(clone);
 
       const file = new File([blob], `Invoice_${invoiceNo}.pdf`, { type: 'application/pdf' });
 
@@ -240,7 +230,9 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
             </tbody>
           </table>
           
-          <div className="mt-auto">
+          <div className="flex-1"></div>
+
+          <div>
             <p className="uppercase mb-4">RINGGIT MALAYSIA {numberToWords(grandTotal)} ONLY</p>
             
             <div className="flex justify-between items-start border-t border-black pt-2">
@@ -248,21 +240,21 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
                 className="w-[45%] text-[9px] text-black pr-4 html-content leading-tight"
                 dangerouslySetInnerHTML={{ __html: settings?.invoiceNotes || '' }}
               />
-              <div className="w-[55%] flex flex-col items-end gap-2 font-bold text-sm whitespace-nowrap">
+              <div className="w-[60%] flex flex-col items-end gap-2 font-bold text-sm whitespace-nowrap">
                 {totalBirds > 0 && (
-                  <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-4">
                     <span>TOTAL BIRDS :</span>
-                    <span className="min-w-[100px] text-right">{totalBirds}</span>
+                    <span className="min-w-[100px] text-right inline-block">{totalBirds}</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-4">
                   <span>TOTAL : RM</span>
-                  <span className="min-w-[100px] text-right border-b-2 border-black">{Number(grandTotal).toFixed(2)}</span>
+                  <span className="border-b-2 border-black border-double min-w-[100px] text-right inline-block">{Number(grandTotal).toFixed(2)}</span>
                 </div>
               </div>
             </div>
             
-            <div className="flex justify-end mt-16">
+            <div className="flex justify-end mt-24">
               <div className="text-center w-64 border-t border-black pt-2 relative">
                 {settings?.signatureImage && (
                   <img 
