@@ -140,6 +140,17 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
     return () => document.body.classList.remove('printing-modal');
   }, [isOpen]);
 
+  // Auto-print for hidden renderer
+  useEffect(() => {
+    if (isOpen && hiddenRenderer && !isLoading && fullSale) {
+      const timer = setTimeout(() => {
+        handlePrint();
+        onClose();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, hiddenRenderer, isLoading, fullSale, onClose]);
+
   if (!isOpen) return null;
 
   if (isLoading && !hiddenRenderer) {
@@ -160,11 +171,12 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
   };
 
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 print:absolute print:top-0 print:left-0 print:block print:bg-transparent print:m-0 print:p-0 print-invoice-container">
-      <div className="bg-white w-[210mm] h-[97vh] flex flex-col rounded-md shadow-2xl relative print:w-full print:shadow-none print:h-auto print:min-h-[250mm]">
+    <div className={hiddenRenderer ? "hidden print:block print:absolute print:top-0 print:left-0 print:bg-transparent print:m-0 print:p-0 print-invoice-container" : "fixed inset-0 z-50 flex items-center justify-center bg-black/60 print:absolute print:top-0 print:left-0 print:block print:bg-transparent print:m-0 print:p-0 print-invoice-container"}>
+      <div className={`bg-white flex flex-col relative print:w-full print:shadow-none print:h-auto print:min-h-[250mm] ${hiddenRenderer ? 'w-full' : 'w-[210mm] h-[97vh] rounded-md shadow-2xl'}`}>
         
         {/* Header - Screen Only */}
-        <div className="flex justify-between items-center bg-[#111827] text-white p-3 rounded-t-md print:hidden">
+        {!hiddenRenderer && (
+          <div className="flex justify-between items-center bg-[#111827] text-white p-3 rounded-t-md print:hidden">
           <div className="flex items-center gap-2 font-bold text-sm">
             <Printer size={16} />
             <span>Invoice - {invoiceNo}</span>
@@ -181,7 +193,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
               <X size={20} />
             </button>
           </div>
-        </div>
+        )}
 
         {/* Printable Area */}
         <div id="printable-invoice" className="flex-1 overflow-auto flex flex-col p-8 font-sans text-black print:p-6 bg-white">
@@ -294,35 +306,37 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
         </div>
 
         {/* Footer Actions - Screen Only */}
-        <div className="flex justify-between items-center p-4 bg-gray-50 border-t border-gray-200 rounded-b-md print:hidden">
-          <button 
-            type="button"
-            onClick={handleShare}
-            disabled={isSharing}
-            className="flex items-center gap-2 bg-[#25D366] hover:bg-[#1DA851] disabled:opacity-70 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
-          >
-            {isSharing ? <Loader2 size={16} className="animate-spin" /> : <Share2 size={16} />}
-            {isSharing ? 'Preparing...' : 'Share Invoice'}
-          </button>
-          
-          <div className="flex gap-2">
+        {!hiddenRenderer && (
+          <div className="flex justify-between items-center p-4 bg-gray-50 border-t border-gray-200 rounded-b-md print:hidden">
             <button 
               type="button"
-              onClick={handlePrint}
-              className="flex items-center gap-2 bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
+              onClick={handleShare}
+              disabled={isSharing}
+              className="flex items-center gap-2 bg-[#25D366] hover:bg-[#1DA851] disabled:opacity-70 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
             >
-              <Printer size={16} />
-              Print / Save PDF
+              {isSharing ? <Loader2 size={16} className="animate-spin" /> : <Share2 size={16} />}
+              {isSharing ? 'Preparing...' : 'Share Invoice'}
             </button>
-            <button 
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
-            >
-              Close
-            </button>
+            
+            <div className="flex gap-2">
+              <button 
+                type="button"
+                onClick={handlePrint}
+                className="flex items-center gap-2 bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
+              >
+                <Printer size={16} />
+                Print / Save PDF
+              </button>
+              <button 
+                type="button"
+                onClick={onClose}
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
+              >
+                Close
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>

@@ -895,6 +895,7 @@ const POS = () => {
           }
         }} 
         sale={saleToPrint}
+        hiddenRenderer={true}
       />
 
       {/* Loss Warning Modal */}
