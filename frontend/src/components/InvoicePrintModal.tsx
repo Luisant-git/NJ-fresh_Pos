@@ -193,6 +193,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
               <X size={20} />
             </button>
           </div>
+        </div>
         )}
 
         {/* Printable Area */}
