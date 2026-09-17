@@ -17,6 +17,11 @@ export class SupplierPaymentsController {
     return this.supplierPaymentsService.getBalance(Number(id));
   }
 
+  @Get('consolidation-report')
+  async getConsolidationReport() {
+    return this.supplierPaymentsService.getConsolidationReport();
+  }
+
   @Get('unpaid-bills/:id')
   async getUnpaidBills(@Param('id') id: string) {
     return this.supplierPaymentsService.getUnpaidBills(Number(id));

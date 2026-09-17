@@ -17,6 +17,11 @@ export class CustomerReceiptsController {
     return this.customerReceiptsService.getBalance(Number(id));
   }
 
+  @Get('consolidation-report')
+  async getConsolidationReport() {
+    return this.customerReceiptsService.getConsolidationReport();
+  }
+
   @Get('unpaid-bills/:id')
   async getUnpaidBills(@Param('id') id: string) {
     return this.customerReceiptsService.getUnpaidBills(Number(id));
