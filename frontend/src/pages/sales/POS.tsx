@@ -239,7 +239,7 @@ const POS = () => {
       setValue(`items.${index}.stock`, product.currentStock || 0);
       setValue(`items.${index}.unit`, product.unit?.shortCode || product.unit?.name || 'Nos');
       
-      let rateToUse: any = '';
+      let rateToUse: any = product.sellingRate ? Number(product.sellingRate) : '';
       if (settings?.enableCustomerRates && selectedCustomerId && customerRates.length > 0) {
         const customRate = customerRates.find((r: any) => r.productId === product.id);
         if (customRate && Number(customRate.rate) > 0) {
