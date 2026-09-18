@@ -69,7 +69,7 @@ const Settings = () => {
 
   const updateSettingsMutation = useMutation({
     mutationFn: (data: StoreSettingsValues) => api.post('/settings', data),
-    onSuccess: (res, variables) => {
+    onSuccess: (_, variables) => {
       toast.success('Store settings updated successfully');
       // Optimistically update the cache so the UI updates instantly everywhere
       queryClient.setQueryData(['settings'], (oldData: any) => ({
