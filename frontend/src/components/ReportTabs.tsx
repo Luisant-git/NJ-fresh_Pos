@@ -1,13 +1,23 @@
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  ShoppingBag, 
-  CornerDownLeft, 
   FileText, 
+  Download, 
+  TrendingUp, 
+  Filter, 
   Box, 
+  Search, 
+  Calendar, 
+  ChevronRight, 
+  BarChart3, 
   PieChart, 
-  Users, 
-  Truck,
-  DollarSign
+  ShoppingBag, 
+  Truck, 
+  LayoutList, 
+  BookOpen, 
+  Package, 
+  CornerDownLeft, 
+  DollarSign,
+  Users
 } from 'lucide-react';
 
 const ReportTabs = () => {
