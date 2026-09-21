@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { User, Lock, ArrowRight } from 'lucide-react';
 import api from '../../services/api'; // updated import path just in case
 
-const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const Login = () => {  const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

@@ -307,7 +307,7 @@ const Dashboard = () => {
                         {bill.entryNo} • {new Date(bill.date).toLocaleDateString('en-GB')}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right whitespace-nowrap">
+                    <td className="px-4 py-3 text-right">
                       <div className="font-bold text-[#059669]">{formatCurrency(bill.pending)}</div>
                       <div className="text-black font-bold text-[11px] mt-0.5">
                         Total: {formatCurrency(bill.total)}
@@ -353,7 +353,7 @@ const Dashboard = () => {
                         {bill.entryNo} • {new Date(bill.date).toLocaleDateString('en-GB')}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right whitespace-nowrap">
+                    <td className="px-4 py-3 text-right">
                       <div className="font-bold text-[#059669]">{formatCurrency(bill.pending)}</div>
                       <div className="text-black font-bold text-[11px] mt-0.5">
                         Total: {formatCurrency(bill.total)}

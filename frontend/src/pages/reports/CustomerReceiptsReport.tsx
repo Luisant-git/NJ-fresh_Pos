@@ -8,6 +8,7 @@ import api from '../../services/api';
 import ReportTabs from '../../components/ReportTabs';
 import PaginationControls from '../../components/PaginationControls';
 import SearchableSelect from '../../components/SearchableSelect';
+import TableLoader from '../../components/TableLoader';
 
 const CustomerReceiptsReport = () => {
   const { formatCurrency, settings } = useSettings();
@@ -405,7 +406,7 @@ const CustomerReceiptsReport = () => {
         </div>
       </div>
 
-      {/* Main Table Section */}
+      {/* Main Content Area */}
       <div className="bg-white border border-[#E2E8F0] shadow-sm rounded-md overflow-hidden flex flex-col flex-1">
         <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-4 py-3 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-2 text-black font-bold">
@@ -447,7 +448,7 @@ const CustomerReceiptsReport = () => {
                 </thead>
                 <tbody>
                   {consolidationLoading ? (
-                    <tr><td colSpan={8} className="text-center p-6 text-black font-bold">Loading consolidation report...</td></tr>
+                    <TableLoader columns={8} />
                   ) : filteredConsolidation.length === 0 ? (
                     <tr><td colSpan={8} className="text-center p-6 text-black font-bold">No customer records found.</td></tr>
                   ) : (
@@ -483,7 +484,7 @@ const CustomerReceiptsReport = () => {
                 </thead>
                 <tbody>
                   {historyLoading ? (
-                    <tr><td colSpan={7} className="text-center p-6 text-black font-bold">Loading receipt history...</td></tr>
+                    <TableLoader columns={7} />
                   ) : filteredHistory.length === 0 ? (
                     <tr><td colSpan={7} className="text-center p-6 text-black font-bold">No receipt vouchers found.</td></tr>
                   ) : (

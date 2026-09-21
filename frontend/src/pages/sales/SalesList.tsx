@@ -7,6 +7,7 @@ import InvoicePrintModal from '../../components/InvoicePrintModal';
 import { useSettings } from '../../contexts/SettingsContext';
 import ViewSalesModal from './ViewSalesModal';
 import PaginationControls from '../../components/PaginationControls';
+import TableLoader from '../../components/TableLoader';
 
 const SalesList = () => {
   const { settings, formatCurrency } = useSettings();
@@ -124,20 +125,6 @@ const SalesList = () => {
                 className="w-full sm:w-64 px-3 py-1.5 border border-[#ccc] rounded outline-none text-[12px] focus:border-[#3B82F6]"
               />
             </div>
-
-            {(searchTerm || paymentModeFilter) && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchTerm('');
-                  setPaymentModeFilter('');
-                  setCurrentPage(1);
-                }}
-                className="text-[12px] bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1.5 rounded font-bold transition-colors"
-              >
-                Reset
-              </button>
-            )}
           </div>
         </div>
 
@@ -157,9 +144,7 @@ const SalesList = () => {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr>
-                  <td colSpan={6} className="px-2 py-4 text-center text-[#73879C]">Loading...</td>
-                </tr>
+                <TableLoader columns={6} />
               ) : filteredSales.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-2 py-4 text-center text-[#73879C]">No sales invoices found matching your criteria.</td>
