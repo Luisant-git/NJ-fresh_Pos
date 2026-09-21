@@ -37,7 +37,7 @@ const ReportTabs = () => {
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-bold whitespace-nowrap transition-all ${
                 isActive
                   ? 'bg-[#0F172A] text-white shadow-sm'
-                  : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
+                  : 'text-black font-bold hover:text-[#0F172A] hover:bg-[#F1F5F9]'
               }`}
             >
               {tab.icon}
