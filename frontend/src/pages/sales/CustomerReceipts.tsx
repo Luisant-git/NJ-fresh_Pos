@@ -38,6 +38,9 @@ const CustomerReceipts = () => {
   const [isTableExpanded, setIsTableExpanded] = useState(false);
   const [billFilter, setBillFilter] = useState<'Unpaid' | 'Paid' | 'All'>('Unpaid');
   const [allocations, setAllocations] = useState<Record<string, number>>({});
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  const { data: storeSettings } = useQuery({ queryKey: ['settings'], queryFn: async () => (await api.get('/settings')).data });
 
   const { register, control, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<ReceiptFormValues>({
     resolver: zodResolver(receiptSchema) as any,
@@ -114,6 +117,22 @@ const CustomerReceipts = () => {
     }
   });
 
+  const updateMutation = useMutation({
+    mutationFn: (data: { id: number, payload: any }) => api.put(`/customer-receipts/${data.id}`, data.payload),
+    onSuccess: () => {
+      toast.success('Receipt updated successfully!');
+      queryClient.invalidateQueries({ queryKey: ['customerReceipts'] });
+      reset();
+      setEditingId(null);
+      setCurrentBalance(0);
+      setAllocations({});
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Failed to update receipt.');
+    }
+  });
+
   const onSubmit = (data: ReceiptFormValues) => {
     const payload = {
       ...data,
@@ -122,7 +141,11 @@ const CustomerReceipts = () => {
         amount
       }))
     };
-    createMutation.mutate(payload as any);
+    if (editingId) {
+      updateMutation.mutate({ id: editingId, payload });
+    } else {
+      createMutation.mutate(payload as any);
+    }
   };
 
   const onError = (errors: any) => {
@@ -195,7 +218,7 @@ const CustomerReceipts = () => {
         <div className={`bg-white border border-[#E2E8F0] shadow-sm rounded-lg overflow-hidden ${isTableExpanded ? 'hidden' : 'block'} print:border-none print:shadow-none print:w-full`}>
           <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-4 py-3 flex items-center gap-2 print:hidden">
             <FileText size={16} className="text-black font-bold" />
-            <h2 className="font-bold text-[13px] text-black font-bold">NEW RECEIPT ENTRY</h2>
+            <h2 className="font-bold text-[13px] text-black font-bold">{editingId ? 'EDIT RECEIPT ENTRY' : 'NEW RECEIPT ENTRY'}</h2>
           </div>
           
           <form onSubmit={handleSubmit(onSubmit as any, onError)} className="p-4 flex flex-col gap-4">
@@ -453,13 +476,27 @@ const CustomerReceipts = () => {
               />
             </div>
 
-            <div className="flex justify-end mt-2 print:hidden">
+            <div className="flex justify-end mt-2 print:hidden gap-2">
+              {editingId && (
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    reset();
+                    setEditingId(null);
+                    setAllocations({});
+                    queryClient.invalidateQueries({ queryKey: ['nextReceiptNo'] });
+                  }}
+                  className="bg-[#F1F5F9] text-black hover:bg-[#E2E8F0] px-4 py-2 rounded font-bold text-[12px] md:text-[14px] flex items-center justify-center gap-2 transition-colors w-full md:w-auto border border-[#CBD5E1]"
+                >
+                  <X size={14} /> CANCEL
+                </button>
+              )}
               <button 
                 type="submit" 
-                disabled={createMutation.isPending}
+                disabled={createMutation.isPending || updateMutation.isPending}
                 className="bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 rounded font-bold text-[12px] md:text-[14px] flex items-center justify-center gap-2 transition-colors disabled:opacity-50 w-full md:w-auto"
               >
-                <Save size={14} /> SAVE RECEIPT (F10)
+                <Save size={14} /> {editingId ? 'UPDATE RECEIPT (F10)' : 'SAVE RECEIPT (F10)'}
               </button>
             </div>
 
@@ -536,14 +573,15 @@ const CustomerReceipts = () => {
                   <th className="px-3 py-2 border-r border-[#334155]">Date</th>
                   <th className="px-3 py-2 border-r border-[#334155]">Customer</th>
                   <th className="px-3 py-2 border-r border-[#444]">Payment Type</th>
-                  <th className="px-3 py-2 text-right">Amount Paid</th>
+                  <th className="px-3 py-2 text-right border-r border-[#334155]">Amount Paid</th>
+                  {storeSettings?.allowEditReceipts && <th className="px-3 py-2 text-center w-20">Action</th>}
                 </tr>
               </thead>
               <tbody>
                 {historyLoading ? (
-                  <tr><td colSpan={5} className="text-center p-4 text-black font-bold">Loading history...</td></tr>
+                  <tr><td colSpan={storeSettings?.allowEditReceipts ? 6 : 5} className="text-center p-4 text-black font-bold">Loading history...</td></tr>
                 ) : filteredHistory.length === 0 ? (
-                  <tr><td colSpan={5} className="text-center p-4 text-black font-bold">No receipt records found.</td></tr>
+                  <tr><td colSpan={storeSettings?.allowEditReceipts ? 6 : 5} className="text-center p-4 text-black font-bold">No receipt records found.</td></tr>
                 ) : (
                   filteredHistory.map((r: any, idx: number) => (
                     <tr key={r.id} className={`border-b border-[#E2E8F0] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'}`}>
@@ -552,6 +590,30 @@ const CustomerReceipts = () => {
                       <td className="px-3 py-2 border-r border-[#E2E8F0] font-bold text-black font-bold">{r.customer?.name}</td>
                       <td className="px-3 py-3 border-r border-[#E5E7EB] text-black font-bold">{r.paymentType?.name || r.paymentMode?.name || '-'}</td>
                       <td className="px-3 py-2 text-right font-bold text-[#059669]">{formatCurrency(r.amount)}</td>
+                      {storeSettings?.allowEditReceipts && (
+                        <td className="px-3 py-2 text-center border-l border-[#E2E8F0]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              reset({
+                                receiptNo: r.receiptNo,
+                                date: new Date(r.date).toISOString().split('T')[0],
+                                customerId: r.customerId,
+                                amount: r.amount,
+                                paymentTypeId: r.paymentTypeId || 0,
+                                reference: r.reference || '',
+                                remarks: r.remarks || '',
+                              });
+                              setEditingId(r.id);
+                              setAllocations({});
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="bg-[#EFF6FF] text-[#2563EB] hover:bg-[#DBEAFE] px-2 py-1 rounded text-[11px] font-bold border border-[#BFDBFE] transition-colors"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))
                 )}

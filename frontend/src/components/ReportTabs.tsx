@@ -18,6 +18,7 @@ const ReportTabs = () => {
     { name: 'Purchase Return', path: '/reports/purchase-return', icon: <CornerDownLeft size={14} /> },
     { name: 'Sales Report', path: '/reports/sales', icon: <FileText size={14} /> },
     { name: 'Sales Return', path: '/reports/sales-return', icon: <CornerDownLeft size={14} /> },
+    { name: 'Product Wise Sales', path: '/reports/product-wise-sales', icon: <Package size={14} /> },
     { name: 'Stock as on Date', path: '/reports/stock', icon: <Box size={14} /> },
     { name: 'Profit & Ledger', path: '/reports/profit-ledger', icon: <PieChart size={14} /> },
     { name: 'Expense Report', path: '/reports/expenses', icon: <DollarSign size={14} /> },

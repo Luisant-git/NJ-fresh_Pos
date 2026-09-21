@@ -19,8 +19,8 @@ const storeSettingsSchema = z.object({
   invoicePrefix: z.string().min(1, 'Prefix is required'),
   invoiceNotes: z.string().optional(),
   signatureImage: z.string().optional(),
-  yearlyInvoiceReset: z.boolean().optional(),
   allowEditSaleInvoice: z.boolean().optional(),
+  allowEditReceipts: z.boolean().optional(),
   enableCustomerRates: z.boolean().optional(),
 });
 
@@ -62,6 +62,7 @@ const Settings = () => {
         signatureImage: settings.signatureImage || '',
         yearlyInvoiceReset: settings.yearlyInvoiceReset || false,
         allowEditSaleInvoice: settings.allowEditSaleInvoice || false,
+        allowEditReceipts: settings.allowEditReceipts || false,
         enableCustomerRates: settings.enableCustomerRates || false,
       });
     }
@@ -69,13 +70,8 @@ const Settings = () => {
 
   const updateSettingsMutation = useMutation({
     mutationFn: (data: StoreSettingsValues) => api.post('/settings', data),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       toast.success('Store settings updated successfully');
-      // Optimistically update the cache so the UI updates instantly everywhere
-      queryClient.setQueryData(['settings'], (oldData: any) => ({
-        ...oldData,
-        ...variables
-      }));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     },
     onError: () => toast.error('Failed to update settings')
@@ -282,6 +278,22 @@ const Settings = () => {
                 </label>
               </div>
               <p className="text-[11px] text-black font-bold mt-1 ml-[48px]">Enables the Edit action button for sales invoices in the Sales List view.</p>
+
+              <div className="flex items-center mt-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="allowEditReceipts"
+                    {...registerStore('allowEditReceipts')}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2563EB]"></div>
+                  <span className="ml-3 text-[12px] font-bold text-black font-bold">
+                    Allow Edit Receipts & Payments in History
+                  </span>
+                </label>
+              </div>
+              <p className="text-[11px] text-black font-bold mt-1 ml-[48px]">Enables the Edit action button for customer receipts and supplier payments.</p>
 
               <div className="flex items-center mt-3">
                 <label className="relative inline-flex items-center cursor-pointer">

@@ -38,6 +38,9 @@ const SupplierPayments = () => {
   const [isTableExpanded, setIsTableExpanded] = useState(false);
   const [billFilter, setBillFilter] = useState<'Unpaid' | 'Paid' | 'All'>('Unpaid');
   const [allocations, setAllocations] = useState<Record<string, number>>({});
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  const { data: storeSettings } = useQuery({ queryKey: ['settings'], queryFn: async () => (await api.get('/settings')).data });
 
   const { register, control, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentSchema) as any,
@@ -114,6 +117,22 @@ const SupplierPayments = () => {
     }
   });
 
+  const updateMutation = useMutation({
+    mutationFn: (data: { id: number, payload: any }) => api.put(`/supplier-payments/${data.id}`, data.payload),
+    onSuccess: () => {
+      toast.success('Payment updated successfully!');
+      queryClient.invalidateQueries({ queryKey: ['supplierPayments'] });
+      reset();
+      setEditingId(null);
+      setCurrentBalance(0);
+      setAllocations({});
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Failed to update payment.');
+    }
+  });
+
   const onSubmit = (data: PaymentFormValues) => {
     const payload = {
       ...data,
@@ -122,7 +141,11 @@ const SupplierPayments = () => {
         amount
       }))
     };
-    createMutation.mutate(payload as any);
+    if (editingId) {
+      updateMutation.mutate({ id: editingId, payload });
+    } else {
+      createMutation.mutate(payload as any);
+    }
   };
 
   const onError = (errors: any) => {
@@ -195,7 +218,7 @@ const SupplierPayments = () => {
         <div className={`bg-white border border-[#E2E8F0] shadow-sm rounded-lg overflow-hidden ${isTableExpanded ? 'hidden' : 'block'} print:border-none print:shadow-none print:w-full`}>
           <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-4 py-3 flex items-center gap-2 print:hidden">
             <FileText size={16} className="text-black font-bold" />
-            <h2 className="font-bold text-[13px] text-black font-bold">NEW SUPPLIER PAYMENT ENTRY</h2>
+            <h2 className="font-bold text-[13px] text-black font-bold">{editingId ? 'EDIT PAYMENT ENTRY' : 'NEW PAYMENT ENTRY'}</h2>
           </div>
           
           <form onSubmit={handleSubmit(onSubmit as any, onError)} className="p-4 flex flex-col gap-4">
@@ -453,13 +476,27 @@ const SupplierPayments = () => {
               />
             </div>
 
-            <div className="flex justify-end mt-2 print:hidden">
+            <div className="flex justify-end mt-2 print:hidden gap-2">
+              {editingId && (
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    reset();
+                    setEditingId(null);
+                    setAllocations({});
+                    queryClient.invalidateQueries({ queryKey: ['nextPaymentNo'] });
+                  }}
+                  className="bg-[#F1F5F9] text-black hover:bg-[#E2E8F0] px-4 py-2 rounded font-bold text-[12px] md:text-[14px] flex items-center justify-center gap-2 transition-colors w-full md:w-auto border border-[#CBD5E1]"
+                >
+                  <X size={14} /> CANCEL
+                </button>
+              )}
               <button 
                 type="submit" 
-                disabled={createMutation.isPending}
+                disabled={createMutation.isPending || updateMutation.isPending}
                 className="bg-[#E11D48] hover:bg-[#BE123C] text-white px-4 py-2 rounded font-bold text-[12px] md:text-[14px] flex items-center justify-center gap-2 transition-colors disabled:opacity-50 w-full md:w-auto"
               >
-                <Save size={14} /> SAVE PAYMENT (F10)
+                <Save size={14} /> {editingId ? 'UPDATE PAYMENT (F10)' : 'SAVE PAYMENT (F10)'}
               </button>
             </div>
 
@@ -536,28 +573,49 @@ const SupplierPayments = () => {
                   <th className="px-3 py-2 border-r border-[#334155]">Date</th>
                   <th className="px-3 py-2 border-r border-[#334155]">Supplier</th>
                   <th className="px-3 py-2 border-r border-[#334155]">Mode</th>
-                  <th className="px-3 py-2 text-right">Amount Paid</th>
+                  <th className="px-3 py-2 text-right border-r border-[#334155]">Amount Paid</th>
+                  {storeSettings?.allowEditReceipts && <th className="px-3 py-2 text-center w-20">Action</th>}
                 </tr>
               </thead>
               <tbody>
                 {historyLoading ? (
-                  <tr><td colSpan={5} className="text-center p-4 text-black font-bold">Loading history...</td></tr>
+                  <tr><td colSpan={storeSettings?.allowEditReceipts ? 6 : 5} className="text-center p-4 text-black font-bold">Loading history...</td></tr>
                 ) : filteredHistory.length === 0 ? (
-                  <tr><td colSpan={5} className="text-center p-4 text-black font-bold">No payment records found.</td></tr>
+                  <tr><td colSpan={storeSettings?.allowEditReceipts ? 6 : 5} className="text-center p-4 text-black font-bold">No payment records found.</td></tr>
                 ) : (
                   filteredHistory.map((p: any, idx: number) => (
                     <tr key={p.id} className={`border-b border-[#E2E8F0] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'}`}>
                       <td className="px-3 py-3 border-r border-[#E5E7EB] text-black font-bold">{p.paymentType?.name || p.paymentMode?.name || '-'}</td>
                       <td className="px-3 py-2 border-r border-[#E2E8F0] text-black font-bold">{new Date(p.date).toISOString().split('T')[0]}</td>
                       <td className="px-3 py-2 border-r border-[#E2E8F0] font-bold text-black font-bold">{p.supplier?.name}</td>
-                      <td className="px-3 py-2 border-r border-[#E2E8F0]">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          p.paymentMode?.name?.includes('Return') ? 'bg-[#F59E0B] text-white' : 'bg-[#64748B] text-white'
-                        }`}>
-                          {p.paymentMode?.name}
-                        </span>
+                      <td className="px-3 py-2 border-r border-[#E2E8F0] text-black font-bold">
+                        {p.paymentMode?.name || '-'}
                       </td>
                       <td className="px-3 py-2 text-right font-bold text-[#E11D48]">{formatCurrency(p.amount)}</td>
+                      {storeSettings?.allowEditReceipts && (
+                        <td className="px-3 py-2 text-center border-l border-[#E2E8F0]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              reset({
+                                paymentNo: p.paymentNo,
+                                date: new Date(p.date).toISOString().split('T')[0],
+                                supplierId: p.supplierId,
+                                amount: p.amount,
+                                paymentTypeId: p.paymentTypeId || 0,
+                                reference: p.reference || '',
+                                remarks: p.remarks || '',
+                              });
+                              setEditingId(p.id);
+                              setAllocations({});
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="bg-[#EFF6FF] text-[#2563EB] hover:bg-[#DBEAFE] px-2 py-1 rounded text-[11px] font-bold border border-[#BFDBFE] transition-colors"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))
                 )}
