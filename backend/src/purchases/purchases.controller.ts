@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Query, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, UseGuards, Query, Delete, Request } from '@nestjs/common';
 import { PurchasesService } from './purchases.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -12,6 +12,12 @@ export class PurchasesController {
   create(@Body() createPurchaseDto: CreatePurchaseDto, @Request() req: any) {
     const userId = req.user?.userId;
     return this.purchasesService.create(createPurchaseDto, userId);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() createPurchaseDto: CreatePurchaseDto, @Request() req: any) {
+    const userId = req.user?.userId;
+    return this.purchasesService.update(+id, createPurchaseDto, userId);
   }
 
   @Get()
