@@ -233,7 +233,6 @@ const SalesReport = () => {
                   'Customer Name': s.customerName,
                   'Payment Mode': s.paymentMode,
                   'No. of Items': s.noOfItems,
-                  'Total Birds': s.totalBirds,
                   'Total Amount': s.netPayable
                 }));
                 exportData.push({
@@ -263,7 +262,6 @@ const SalesReport = () => {
                   { header: 'Customer Name', dataKey: 'customerName' },
                   { header: 'Payment Mode', dataKey: 'paymentMode' },
                   { header: 'No. of Items', dataKey: 'noOfItems' },
-                  { header: 'Total Birds', dataKey: 'totalBirds' },
                   { header: 'Total Amount', dataKey: 'netPayable' },
                 ];
                 const pdfData = [...filteredSales, {
@@ -333,8 +331,7 @@ const SalesReport = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold text-black font-bold">{s.noOfItems}</td>
-                    <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold">{s.totalBirds > 0 ? s.totalBirds : '-'}</td>
-                    <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold text-[#3B82F6]">{s.netPayable}</td>
+                                        <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold text-[#3B82F6]">{s.netPayable}</td>
                     <td data-html2canvas-ignore="true" className="px-4 py-3 text-center">
                       <div className="flex justify-center items-center gap-2">
                         <button type="button" 

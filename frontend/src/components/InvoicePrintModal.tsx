@@ -314,7 +314,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
               <tr className="border-b border-[#000000] uppercase">
                 <th className="py-2 w-[15%] font-bold">Code</th>
                 <th className="py-2 w-[35%] font-bold">Description</th>
-                <th className="py-2 w-[10%] text-center font-bold">Birds</th>
+                
                 <th className="py-2 w-[10%] text-right font-bold">Qty</th>
                 <th className="py-2 w-[10%] text-center font-bold">UOM</th>
                 <th className="py-2 w-[10%] text-right font-bold">U.Price</th>

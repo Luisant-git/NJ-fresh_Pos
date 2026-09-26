@@ -677,8 +677,7 @@ const POS = () => {
                 <th className="px-2 py-2 text-left text-[12px] font-bold border border-[#334155]">Product Code / Name (Searchable Dropdown)</th>
                 <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-20">Stock</th>
                 <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-20">Unit</th>
-                <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-20">Birds</th>
-                <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-24">Qty</th>
+                                <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-24">Qty</th>
                 <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-28">Rate</th>
                 <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-20">Disc %</th>
                 <th className="px-2 py-2 text-center text-[12px] font-bold border border-[#334155] w-24">Disc Amt</th>
@@ -741,16 +740,6 @@ const POS = () => {
                   </td>
                   <td data-label="Unit" className="px-2 py-1 border-r border-[#E5E7EB]">
                     <input {...register(`items.${index}.unit`)} type="text" readOnly tabIndex={-1} className="w-full px-1 py-1 bg-transparent text-[13px] outline-none text-center" />
-                  </td>
-                  <td data-label="Birds" className="px-2 py-1 border-r border-[#E5E7EB]">
-                    <input 
-                      {...register(`items.${index}.noOfBirds`)} 
-                      data-row={index} data-col={1}
-                      onKeyDown={(e) => handleCellKey(e, index, 1, 5)}
-                      type="number" step="any" min="0" placeholder="0" 
-                      onFocus={(e) => e.target.select()}
-                      className="w-full px-2 py-1 border border-[#D1D5DB] rounded text-[13px] outline-none text-center transition-colors focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6] focus:bg-blue-50" 
-                    />
                   </td>
                   <td data-label="Qty" className="px-2 py-1 border-r border-[#E5E7EB]">
                     <input 
