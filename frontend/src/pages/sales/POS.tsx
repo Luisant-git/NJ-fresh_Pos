@@ -723,7 +723,7 @@ const POS = () => {
                               }, 100);
                             }
                           } else {
-                            setTimeout(() => focusCell(index, 1), 100);
+                            setTimeout(() => focusCell(index, 2), 100);
                           }
                         }}
                         options={[
