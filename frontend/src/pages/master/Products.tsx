@@ -442,7 +442,7 @@ const Products = () => {
                       <span className="text-[10px] font-bold text-[#D97706] uppercase bg-[#FEF3C7] px-2 py-0.5 rounded">{product.brand?.name || '-'}</span>
                     </td>
                     <td data-label="Stock" className="px-3 py-2.5 border-r border-[#E5E7EB] text-center font-bold">
-                      {product.currentStock} {product.unit?.name}
+                      {Number(Number(product.currentStock).toFixed(4))} {product.unit?.name}
                     </td>
                     <td data-label="Pur Rate" className="px-3 py-2.5 border-r border-[#E5E7EB] text-right text-black font-bold">RM {Number(product.purchaseRate).toFixed(2)}</td>
                     <td data-label="Wholesale" className="px-3 py-2.5 border-r border-[#E5E7EB] text-right font-bold text-[#16A34A]">RM {Number(product.wholesaleRate).toFixed(2)}</td>

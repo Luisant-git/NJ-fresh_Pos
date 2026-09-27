@@ -36,7 +36,7 @@ const StockReport = () => {
         name: p.name,
         brandName: p.brand?.name || '-',
         categoryName: p.category?.name || '-',
-        currentQty: `${p.currentStock} ${p.unit?.shortCode || p.unit?.name || ''}`.trim(),
+        currentQty: `${Number(Number(p.currentStock).toFixed(4))} ${p.unit?.shortCode || p.unit?.name || ''}`.trim(),
         purRate: formatCurrency(p.purchaseRate),
         stockValue: formatCurrency(Number(p.currentStock) * Number(p.purchaseRate)),
         rawStockValue: Number(p.currentStock) * Number(p.purchaseRate),
