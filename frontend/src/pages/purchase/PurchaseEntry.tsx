@@ -122,7 +122,7 @@ const PurchaseEntry = () => {
         paymentModeId: existingPurchase.paymentModeId,
         items: existingPurchase.items.map((item: any) => ({
           productId: item.productId,
-          quantity: item.quantity,
+          quantity: Number(Number(item.quantity).toFixed(4)),
           unit: item.product?.unit?.shortCode || item.product?.unit?.name || 'Nos',
           pRate: item.rate,
           wRate: item.product?.wholesaleRate || 0,
@@ -282,7 +282,7 @@ const PurchaseEntry = () => {
       grandTotal: data.netAmount,
       items: validItems.map(item => ({
         productId: item.productId,
-        quantity: item.quantity,
+        quantity: Number(Number(item.quantity).toFixed(4)),
         rate: item.pRate,
         wRate: item.wRate,
         sRate: item.sRate,

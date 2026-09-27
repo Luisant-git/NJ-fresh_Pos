@@ -327,7 +327,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
                   <td className="py-1 font-bold">{item.product?.code || ''}</td>
                   <td className="py-1 font-bold">{item.product?.name || ''}</td>
                   <td className="py-1 text-center font-bold">{Number(item.noOfBirds) || '-'}</td>
-                  <td className="py-1 text-right font-bold">{item.quantity}</td>
+                  <td className="py-1 text-right font-bold">{Number(Number(item.quantity).toFixed(4))}</td>
                   <td className="py-1 text-center font-bold">{item.product?.unit?.name || item.product?.unit?.shortCode || 'Nos'}</td>
                   <td className="py-1 text-right font-bold">{Number(item.rate || 0).toFixed(2)}</td>
                   <td className="py-1 text-right font-bold">{Number(item.amount || item.total || 0).toFixed(2)}</td>
@@ -343,10 +343,10 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
             
             <div className="flex justify-between items-start border-t border-[#000000] pt-2">
               <div 
-                className="w-[55%] text-[11px] text-[#000000] pr-4 html-content leading-tight whitespace-pre-line"
+                className="w-[70%] text-[11px] text-[#000000] pr-4 html-content leading-tight whitespace-pre-line"
                 dangerouslySetInnerHTML={{ __html: settings?.invoiceNotes || `Note:<br/>1. All Cheques should be crossed and made payable to NJ FRESH AND FROZEN SDN BHD<br/>2. ACCOUNT DETAILS:<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NJ FRESH AND FROZEN SDN BHD<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACCOUNT NO- 21419200050230, BANK NAME: RHB bank<br/>3. Goods sold are neither returnable nor refundable. Otherwise a cancellation fee of 20% on the purchase price will be imposed` }}
               />
-              <div className="w-[45%] flex flex-col items-end gap-2 font-bold text-sm whitespace-nowrap">
+              <div className="w-[30%] flex flex-col items-end gap-2 font-bold text-sm whitespace-nowrap">
                 {totalBirds > 0 && (
                   <div className="flex items-center gap-4">
                     <span>TOTAL BIRDS :</span>
