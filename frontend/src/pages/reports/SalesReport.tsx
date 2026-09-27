@@ -55,14 +55,12 @@ const SalesReport = () => {
         } 
       });
       return data.map((s: any) => {
-        const totalBirds = s.items?.reduce((sum: number, item: any) => sum + (Number(item.noOfBirds) || 0), 0) || 0;
         return {
           id: s.id,
           invoiceNo: s.invoiceNo,
           date: new Date(s.date).toISOString().split('T')[0],
           customerName: s.customer?.name || 'Walk-in',
           paymentMode: s.paymentMode?.name || 'Cash',
-          totalBirds,
           noOfItems: s.items?.length || 0,
           netPayable: formatCurrency(s.grandTotal || 0),
           rawTotalAmount: s.grandTotal || 0,
@@ -240,8 +238,7 @@ const SalesReport = () => {
                   'Date': '',
                   'Customer Name': '',
                   'Payment Mode': '',
-                  'No. of Items': '',
-                  'Total Birds': 'TOTAL AMOUNT:',
+                  'No. of Items': 'TOTAL AMOUNT:',
                   'Total Amount': formatCurrency(totalSalesAmount)
                 });
                 exportToExcel(exportData, `Sales_Report_${fromDate}_to_${toDate}`, {
@@ -269,8 +266,7 @@ const SalesReport = () => {
                   date: '',
                   customerName: '',
                   paymentMode: '',
-                  noOfItems: '',
-                  totalBirds: 'TOTAL AMOUNT:',
+                  noOfItems: 'TOTAL AMOUNT:',
                   netPayable: formatCurrency(totalSalesAmount)
                 }];
                 exportTableToPdf(cols, pdfData, `Sales_Report_${fromDate}_to_${toDate}`, 'Sales Report', settings?.shopName, filteredSales.length);
@@ -305,7 +301,6 @@ const SalesReport = () => {
                 <th className="px-4 py-3 border-r border-[#1E293B]">Customer Name</th>
                 <th className="px-4 py-3 border-r border-[#1E293B] text-center">Payment Mode</th>
                 <th className="px-4 py-3 border-r border-[#1E293B] text-center">No. of Items</th>
-                <th className="px-4 py-3 border-r border-[#1E293B] text-center">Total Birds</th>
                 <th className="px-4 py-3 border-r border-[#1E293B] text-center">Total Amount</th>
                 <th data-html2canvas-ignore="true" className="px-4 py-3 text-center w-40">Action</th>
               </tr>
