@@ -339,12 +339,12 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
           <div>
             <p className="uppercase mb-4 text-[13px] font-bold">RINGGIT MALAYSIA {numberToWords(grandTotal)} ONLY</p>
             
-            <div className="flex justify-between items-start border-t border-[#000000] pt-2">
+            <div className="flex justify-between items-start border-t border-[#000000] pt-2 gap-4">
               <div 
-                className="w-[70%] text-[11px] text-[#000000] pr-4 html-content leading-tight whitespace-pre-line"
+                className="flex-1 text-[11px] text-[#000000] pr-4 html-content leading-tight whitespace-pre-line"
                 dangerouslySetInnerHTML={{ __html: settings?.invoiceNotes || `Note:<br/>1. All Cheques should be crossed and made payable to NJ FRESH AND FROZEN SDN BHD<br/>2. ACCOUNT DETAILS:<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NJ FRESH AND FROZEN SDN BHD<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACCOUNT NO- 21419200050230, BANK NAME: RHB bank<br/>3. Goods sold are neither returnable nor refundable. Otherwise a cancellation fee of 20% on the purchase price will be imposed` }}
               />
-              <div className="w-[30%] flex flex-col items-end gap-2 font-bold text-sm whitespace-nowrap">
+              <div className="flex-none flex flex-col items-end gap-2 font-bold text-sm whitespace-nowrap">
                 <div className="flex items-center gap-4">
                   <span>TOTAL : RM</span>
                   <span className="border-b-2 border-[#000000] min-w-[100px] text-right inline-block pb-1">{Number(grandTotal).toFixed(2)}</span>
