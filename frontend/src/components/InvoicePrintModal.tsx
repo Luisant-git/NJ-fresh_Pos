@@ -66,46 +66,114 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
 
   const [pregeneratedBlob, setPregeneratedBlob] = useState<Blob | null>(null);
 
+  const buildPdfElement = (): HTMLElement => {
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:fixed;top:0;left:-9999px;width:794px;min-height:1123px;background:#fff;padding:32px;font-family:sans-serif;color:#000;display:flex;flex-direction:column;box-sizing:border-box;';
+
+    const header = `
+      <div style="text-align:center;margin-bottom:12px">
+        <div style="font-size:16px;font-weight:bold;text-transform:uppercase">NJ FRESH &amp; FROZEN SDN BHD <span style="font-size:11px;font-weight:normal">(202001027405(1383725-H))</span></div>
+        <p style="margin:4px 0;font-size:12px">NO 8G, JLN 3/2 PANDAN JAYA, 55100 KUALA LUMPUR.</p>
+        <p style="margin:0;font-size:12px">Tel : ${settings?.phone || '0392856786'}</p>
+      </div>
+      <div style="border-top:1px solid #000;border-bottom:1px solid #000;padding:6px 0;text-align:center;font-weight:bold;font-size:14px;letter-spacing:2px;margin-bottom:16px">INVOICE</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:20px;font-size:12px">
+        <div style="width:50%">
+          <div style="display:flex">
+            <span style="width:64px;font-weight:bold">Bill To:</span>
+            <div>
+              <p style="margin:0;font-weight:bold">${sale?.customer?.id ? `CUST-${sale.customer.id}` : ''}</p>
+              <p style="margin:0;font-weight:bold">${customerName}</p>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <span style="font-weight:bold">TEL: ${sale?.customer?.phone || ''}</span>
+            <span style="font-weight:bold;margin-left:16px">FAX: </span>
+          </div>
+          <p style="font-weight:bold;margin:4px 0">Attn:</p>
+        </div>
+        <div style="width:50%;padding-left:48px">
+          <table style="font-size:12px;border-collapse:collapse">
+            <tr><td style="font-weight:bold;width:100px">NO.</td><td style="font-weight:bold;padding:0 4px">:</td><td style="font-weight:bold">${invoiceNo}</td></tr>
+            <tr><td style="font-weight:bold">DATE</td><td style="font-weight:bold;padding:0 4px">:</td><td style="font-weight:bold">${date}</td></tr>
+            <tr><td style="font-weight:bold">PAY TYPE</td><td style="font-weight:bold;padding:0 4px">:</td><td>${sale?.paymentMode?.name || 'Cash'}</td></tr>
+            <tr><td style="font-weight:bold">PAGE</td><td style="font-weight:bold;padding:0 4px">:</td><td style="font-weight:bold">1 of 1</td></tr>
+          </table>
+        </div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;border-top:1px solid #000;border-bottom:1px solid #000;margin-bottom:16px">
+        <thead>
+          <tr style="border-bottom:1px solid #000;text-transform:uppercase">
+            <th style="padding:6px 4px;text-align:left;width:15%">Code</th>
+            <th style="padding:6px 4px;text-align:left;width:35%">Description</th>
+            <th style="padding:6px 4px;text-align:right;width:10%">Qty</th>
+            <th style="padding:6px 4px;text-align:center;width:10%">UOM</th>
+            <th style="padding:6px 4px;text-align:right;width:15%">U.Price</th>
+            <th style="padding:6px 4px;text-align:right;width:15%">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map((item: any) => `
+            <tr>
+              <td style="padding:3px 4px;font-weight:bold">${item.product?.code || ''}</td>
+              <td style="padding:3px 4px;font-weight:bold">${item.product?.name || ''}</td>
+              <td style="padding:3px 4px;font-weight:bold;text-align:right">${Number(Number(item.quantity).toFixed(4))}</td>
+              <td style="padding:3px 4px;font-weight:bold;text-align:center">${item.product?.unit?.name || item.product?.unit?.shortCode || 'Nos'}</td>
+              <td style="padding:3px 4px;font-weight:bold;text-align:right">${Number(item.rate || 0).toFixed(2)}</td>
+              <td style="padding:3px 4px;font-weight:bold;text-align:right">${Number(item.amount || item.total || 0).toFixed(2)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+
+    const notes = settings?.invoiceNotes || `Note:<br/>1. All Cheques should be crossed and made payable to NJ FRESH AND FROZEN SDN BHD<br/>2. ACCOUNT DETAILS:<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NJ FRESH AND FROZEN SDN BHD<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACCOUNT NO- 21419200050230, BANK NAME: RHB bank<br/>3. Goods sold are neither returnable nor refundable. Otherwise a cancellation fee of 20% on the purchase price will be imposed`;
+
+    const footer = `
+      <div style="flex:1"></div>
+      <div style="padding-top:32px">
+        <p style="text-transform:uppercase;font-weight:bold;font-size:13px;margin-bottom:12px">RINGGIT MALAYSIA ${numberToWords(grandTotal)} ONLY</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-top:1px solid #000;padding-top:8px;gap:16px">
+          <div style="flex:1;font-size:11px;line-height:1.5">${notes}</div>
+          <div style="flex-shrink:0;font-weight:bold;font-size:13px">
+            <div style="display:flex;justify-content:space-between;width:250px;margin-bottom:8px">
+              <span>TOTAL : RM</span>
+              <span style="border-bottom:2px solid #000;width:100px;text-align:right;display:inline-block;padding-bottom:2px">${Number(grandTotal).toFixed(2)}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border:2px solid #000;padding:4px 10px;width:250px;box-sizing:border-box">
+              <span>PENDING AMT : RM</span>
+              <span style="width:100px;text-align:right;display:inline-block">${Number(pendingAmount).toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    wrapper.innerHTML = header + footer;
+    return wrapper;
+  };
+
   // Pre-generate PDF for instant sharing to preserve user gesture
   useEffect(() => {
-    if (isOpen && !hiddenRenderer && !pregeneratedBlob) {
+    if (isOpen && !hiddenRenderer && !pregeneratedBlob && sale && customerBalance !== undefined) {
       const timer = setTimeout(async () => {
-        const element = document.getElementById('printable-invoice');
-        if (!element) return;
-        
-        const prevOverflow = element.style.overflow;
-        const prevMaxHeight = element.style.maxHeight;
-        const prevHeight = element.style.height;
-        element.style.overflow = 'visible';
-        element.style.maxHeight = 'none';
-        element.style.height = 'auto';
-        
         try {
-          const worker = html2pdf()
-            .set({
-              margin: 0,
-              filename: `Invoice_${invoiceNo}.pdf`,
-              image: { type: 'jpeg', quality: 0.98 },
-              html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, windowWidth: 794 },
-              jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            })
-            .from(element);
-          
+          const el = buildPdfElement();
+          document.body.appendChild(el);
+          const worker = html2pdf().set({
+            margin: 0,
+            filename: `Invoice_${invoiceNo}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, windowWidth: 794 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          }).from(el);
           const pdf = await worker.toPdf().get('pdf');
-          const blob = pdf.output('blob');
-          setPregeneratedBlob(blob);
+          setPregeneratedBlob(pdf.output('blob'));
+          document.body.removeChild(el);
         } catch (e) {
           console.error('Pre-generation failed', e);
         }
-        
-        element.style.overflow = prevOverflow;
-        element.style.maxHeight = prevMaxHeight;
-        element.style.height = prevHeight;
-      }, 1000);
-      
+      }, 800);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, hiddenRenderer, invoiceNo, pregeneratedBlob]);
+  }, [isOpen, hiddenRenderer, invoiceNo, pregeneratedBlob, sale, customerBalance]);
 
   const handleShare = useCallback(async () => {
     const performShare = async (blob: Blob) => {
@@ -144,45 +212,23 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
     }
 
     // Fallback if not pre-generated yet
-    const element = document.getElementById('printable-invoice');
-    if (!element) {
-      toast.error('Invoice content not found.');
-      return;
-    }
     setIsSharing(true);
-    
-    const prevOverflow = element.style.overflow;
-    const prevMaxHeight = element.style.maxHeight;
-    const prevHeight = element.style.height;
-    element.style.overflow = 'visible';
-    element.style.maxHeight = 'none';
-    element.style.height = 'auto';
-    
     try {
-      const worker = html2pdf()
-        .set({
-          margin: 0,
-          filename: `Invoice_${invoiceNo}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, windowWidth: 794 },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        })
-        .from(element);
-      
+      const el = buildPdfElement();
+      document.body.appendChild(el);
+      const worker = html2pdf().set({
+        margin: 0,
+        filename: `Invoice_${invoiceNo}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, windowWidth: 794 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(el);
       const pdf = await worker.toPdf().get('pdf');
       const blob: Blob = pdf.output('blob');
-        
-      element.style.overflow = prevOverflow;
-      element.style.maxHeight = prevMaxHeight;
-      element.style.height = prevHeight;
-      
+      document.body.removeChild(el);
       await performShare(blob);
     } catch (err) {
-      element.style.overflow = prevOverflow;
-      element.style.maxHeight = prevMaxHeight;
-      element.style.height = prevHeight;
       toast.error(`Failed to generate invoice PDF: ${err instanceof Error ? err.message : String(err)}`);
-      console.error('PDF Generation Error:', err);
     } finally {
       setIsSharing(false);
     }
@@ -270,7 +316,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
         )}
 
         {/* Printable Area */}
-        <div id={hiddenRenderer ? "hidden-printable-invoice" : "printable-invoice"} className={`flex-1 flex flex-col p-8 font-sans text-[#000000] print:p-6 bg-[#FFFFFF] ${hiddenRenderer ? 'relative overflow-visible pb-[200px] min-h-[1123px]' : 'overflow-auto'}`}>
+        <div id={hiddenRenderer ? "hidden-printable-invoice" : "printable-invoice"} className={`flex-1 flex flex-col p-8 font-sans text-[#000000] print:p-6 bg-[#FFFFFF] ${hiddenRenderer ? 'overflow-visible' : 'overflow-auto'}`}>
           <div className="w-full flex flex-col items-center justify-center mb-3 print:pt-4 text-center">
             <div className="text-lg font-bold uppercase">NJ FRESH & FROZEN SDN BHD <span className="text-xs font-normal">(202001027405(1383725-H))</span></div>
             <p className="mt-1 text-[12px]">NO 8G, JLN 3/2 PANDAN JAYA, 55100 KUALA LUMPUR.</p>
@@ -334,8 +380,8 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
             </tbody>
           </table>
           
-          {!hiddenRenderer && <div className="flex-1"></div>}
-          <div className={hiddenRenderer ? "absolute bottom-8 left-8 right-8" : "mt-8"}>
+          <div className="flex-1"></div>
+          <div className="mt-8 mb-8">
             <p className="uppercase mb-4 text-[13px] font-bold">RINGGIT MALAYSIA {numberToWords(grandTotal)} ONLY</p>
             
             <div className="flex justify-between items-start border-t border-[#000000] pt-2 gap-4">
