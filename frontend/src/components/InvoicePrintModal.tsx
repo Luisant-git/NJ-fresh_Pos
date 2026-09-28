@@ -315,8 +315,8 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
             </tbody>
           </table>
           
-          <div className="flex-1"></div>
-          <div className="mb-8">
+          <div className="flex-1 invoice-spacer"></div>
+          <div className="mb-8 invoice-bottom-section">
             <p className="uppercase mb-4 text-[13px] font-bold">RINGGIT MALAYSIA {numberToWords(grandTotal)} ONLY</p>
             
             <div className="flex justify-between items-start border-t border-[#000000] pt-2 gap-4">

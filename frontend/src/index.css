@@ -90,6 +90,18 @@
     max-height: 247mm !important;
     overflow: visible !important;
     flex: none !important;
+    position: relative !important;
+  }
+
+  #printable-invoice .invoice-bottom-section {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 32px !important;
+    right: 32px !important;
+  }
+
+  #printable-invoice .invoice-spacer {
+    display: none !important;
   }
   
   body.printing-modal {
