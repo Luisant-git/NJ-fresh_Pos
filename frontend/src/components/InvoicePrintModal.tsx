@@ -327,11 +327,11 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
               <div className="flex-none flex flex-col items-end gap-2 font-bold text-sm whitespace-nowrap">
                 <div className="flex justify-between items-center w-[250px] mb-2">
                   <span>TOTAL : RM</span>
-                  <span className="border-b-2 border-[#000000] w-[100px] text-right inline-block pb-1">{Number(grandTotal).toFixed(2)}</span>
+                  <span className="border-b-2 border-[#000000] w-[100px] text-center inline-block pb-1">{Number(grandTotal).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center border-2 border-[#000000] px-2.5 py-1 w-[250px] rounded-sm bg-[#F9FAFB] print:bg-transparent">
                   <span>PENDING AMT : RM</span>
-                  <span className="w-[100px] text-right inline-block font-bold">{Number(pendingAmount).toFixed(2)}</span>
+                  <span className="w-[100px] text-center inline-block font-bold">{Number(pendingAmount).toFixed(2)}</span>
                 </div>
               </div>
             </div>
