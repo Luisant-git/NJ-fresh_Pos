@@ -9,7 +9,6 @@ import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useSettings } from '../../contexts/SettingsContext';
 import SearchableSelect from '../../components/SearchableSelect';
-import PosItemSelect from '../../components/PosItemSelect';
 
 const purchaseItemSchema = z.object({
   productId: z.coerce.number().min(0),
@@ -644,8 +643,7 @@ const PurchaseEntry = () => {
                         }, 50);
                       }
                     }}>
-                      <PosItemSelect
-                        products={products}
+                      <SearchableSelect
                         value={watch(`items.${index}.productId`)}
                         autoFocus={index === fields.length - 1 && watch(`items.${index}.productId`) === 0}
                         onChange={(val) => {
@@ -668,6 +666,10 @@ const PurchaseEntry = () => {
                             setTimeout(() => focusCell(index, 1), 100);
                           }
                         }}
+                        options={[
+                          { label: 'Type product name / code...', value: 0 },
+                          ...products.map((p: any) => ({ label: `${p.code} - ${p.name}`, value: p.id }))
+                        ]}
                       />
                     </div>
                   </td>
