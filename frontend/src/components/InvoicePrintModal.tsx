@@ -76,7 +76,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
     const prevPar = parent ? { height: parent.style.height, maxHeight: parent.style.maxHeight, overflow: parent.style.overflow } : null;
 
     element.style.overflow = 'visible';
-    element.style.height = '1050px';
+    element.style.height = '1100px';
     element.style.flex = 'none';
     if (parent && prevPar) {
       parent.style.height = 'auto';
@@ -377,7 +377,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
               <button 
                 type="button"
                 onClick={onClose}
-                className="bg-[#F9FAFB]0 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition-colors shadow-sm"
               >
                 Close
               </button>
