@@ -86,11 +86,13 @@
 
   /* Force A4 height on the printable area so flex-1 spacer pushes bottom section down */
   #printable-invoice {
-    height: 247mm !important;
-    max-height: 247mm !important;
+    height: 277mm !important;
+    min-height: 277mm !important;
+    max-height: 277mm !important;
     overflow: visible !important;
     flex: none !important;
     position: relative !important;
+    display: block !important;
   }
 
   #printable-invoice .invoice-bottom-section {
