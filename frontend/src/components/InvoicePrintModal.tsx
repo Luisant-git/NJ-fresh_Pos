@@ -69,11 +69,20 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
   const generatePdf = async (): Promise<Blob> => {
     const element = document.getElementById('printable-invoice');
     if (!element) throw new Error('Invoice element not found');
+    const parent = element.parentElement;
 
-    const prev = { overflow: element.style.overflow, maxHeight: element.style.maxHeight, height: element.style.height };
+    // Temporarily expand both the printable area and its parent to full A4 height
+    const prevEl = { overflow: element.style.overflow, height: element.style.height, flex: element.style.flex };
+    const prevPar = parent ? { height: parent.style.height, maxHeight: parent.style.maxHeight, overflow: parent.style.overflow } : null;
+
     element.style.overflow = 'visible';
-    element.style.maxHeight = 'none';
-    element.style.height = '1050px'; // A4 height minus modal header/footer
+    element.style.height = '1050px';
+    element.style.flex = 'none';
+    if (parent && prevPar) {
+      parent.style.height = 'auto';
+      parent.style.maxHeight = 'none';
+      parent.style.overflow = 'visible';
+    }
 
     try {
       const worker = html2pdf().set({
@@ -86,9 +95,14 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
       const pdf = await worker.toPdf().get('pdf');
       return pdf.output('blob');
     } finally {
-      element.style.overflow = prev.overflow;
-      element.style.maxHeight = prev.maxHeight;
-      element.style.height = prev.height;
+      element.style.overflow = prevEl.overflow;
+      element.style.height = prevEl.height;
+      element.style.flex = prevEl.flex;
+      if (parent && prevPar) {
+        parent.style.height = prevPar.height;
+        parent.style.maxHeight = prevPar.maxHeight;
+        parent.style.overflow = prevPar.overflow;
+      }
     }
   };
 
