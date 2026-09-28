@@ -70,10 +70,11 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
     const element = document.getElementById('printable-invoice');
     if (!element) throw new Error('Invoice element not found');
     const parent = element.parentElement;
+    const grandParent = parent?.parentElement;
 
-    // Temporarily expand both the printable area and its parent to full A4 height
     const prevEl = { overflow: element.style.overflow, height: element.style.height, flex: element.style.flex };
     const prevPar = parent ? { height: parent.style.height, maxHeight: parent.style.maxHeight, overflow: parent.style.overflow } : null;
+    const prevGP = grandParent ? { overflow: grandParent.style.overflow } : null;
 
     element.style.overflow = 'visible';
     element.style.height = '1100px';
@@ -81,7 +82,10 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
     if (parent && prevPar) {
       parent.style.height = 'auto';
       parent.style.maxHeight = 'none';
-      parent.style.overflow = 'visible';
+      parent.style.overflow = 'hidden'; // hide resize from user
+    }
+    if (grandParent && prevGP) {
+      grandParent.style.overflow = 'hidden'; // hide resize from user
     }
 
     try {
@@ -102,6 +106,9 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
         parent.style.height = prevPar.height;
         parent.style.maxHeight = prevPar.maxHeight;
         parent.style.overflow = prevPar.overflow;
+      }
+      if (grandParent && prevGP) {
+        grandParent.style.overflow = prevGP.overflow;
       }
     }
   };
