@@ -9,6 +9,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import SearchableSelect from '../../components/SearchableSelect';
+import PosItemSelect from '../../components/PosItemSelect';
 import InvoicePrintModal from '../../components/InvoicePrintModal';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
@@ -703,7 +704,8 @@ const POS = () => {
                         }, 50);
                       }
                     }}>
-                      <SearchableSelect
+                      <PosItemSelect
+                        products={products}
                         value={watch(`items.${index}.productId`)}
                         autoFocus={index === fields.length - 1 && watch(`items.${index}.productId`) === 0}
                         onChange={(val) => {
@@ -726,10 +728,6 @@ const POS = () => {
                             setTimeout(() => focusCell(index, 2), 100);
                           }
                         }}
-                        options={[
-                          { label: 'Type product name / code...', value: 0 },
-                          ...products.map((p: any) => ({ label: `${p.code} - ${p.name}`, value: p.id }))
-                        ]}
                       />
                     </div>
                   </td>
