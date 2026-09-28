@@ -70,11 +70,10 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
     const element = document.getElementById('printable-invoice');
     if (!element) throw new Error('Invoice element not found');
 
-    // Save original styles
     const prev = { overflow: element.style.overflow, maxHeight: element.style.maxHeight, height: element.style.height };
     element.style.overflow = 'visible';
     element.style.maxHeight = 'none';
-    element.style.height = 'auto';
+    element.style.height = '1050px'; // A4 height minus modal header/footer
 
     try {
       const worker = html2pdf().set({
@@ -303,7 +302,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
           </table>
           
           <div className="flex-1"></div>
-          <div className="mt-8 mb-8">
+          <div className="mb-8">
             <p className="uppercase mb-4 text-[13px] font-bold">RINGGIT MALAYSIA {numberToWords(grandTotal)} ONLY</p>
             
             <div className="flex justify-between items-start border-t border-[#000000] pt-2 gap-4">
