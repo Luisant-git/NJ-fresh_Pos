@@ -68,7 +68,7 @@ const InvoicePrintModal = ({ isOpen, onClose, sale: initialSale, hiddenRenderer 
 
   const buildPdfElement = (): HTMLElement => {
     const wrapper = document.createElement('div');
-    wrapper.style.cssText = 'position:fixed;top:0;left:-9999px;width:794px;min-height:1123px;background:#fff;padding:32px;font-family:sans-serif;color:#000;display:flex;flex-direction:column;box-sizing:border-box;';
+    wrapper.style.cssText = 'position:fixed;top:0;left:0;width:794px;min-height:1123px;background:#fff;padding:32px;font-family:sans-serif;color:#000;display:flex;flex-direction:column;box-sizing:border-box;z-index:-9999;opacity:0;pointer-events:none;';
 
     const header = `
       <div style="text-align:center;margin-bottom:12px">
