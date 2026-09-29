@@ -293,12 +293,6 @@ const SalesReport = () => {
             >
               <Download size={14} /> <span className="hidden lg:inline">Export PDF</span>
             </button>
-            <button type="button" 
-              onClick={() => navigate('/sales/pos')}
-              className="bg-[#1E3A8A] hover:bg-[#172554] text-white px-3 py-1.5 rounded flex items-center gap-1.5 text-[12px] font-bold transition-colors"
-            >
-              <Plus size={14} /> <span className="hidden lg:inline">New POS Bill</span>
-            </button>
           </div>
         </div>
 
