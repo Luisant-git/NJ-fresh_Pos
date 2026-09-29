@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Download, Truck, FileText, RefreshCw, DollarSign, AlertCircle, CheckCircle2, Printer, Loader2 , X} from 'lucide-react';
+import { Download, Truck, FileText, RefreshCw, DollarSign, AlertCircle, CheckCircle2, Printer, Loader2 } from 'lucide-react';
 import { exportTableToPdf, type PdfColumn } from '../../utils/exportPdf';
 import { exportToExcel } from '../../utils/exportExcel';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -16,7 +16,6 @@ const SupplierPaymentsReport = () => {
   const { formatCurrency, settings } = useSettings();
   const [reportMode, setReportMode] = useState<'consolidation' | 'history'>('consolidation');
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -278,49 +277,47 @@ const SupplierPaymentsReport = () => {
 
       {/* Top Header Card with Summary Stats */}
       <div className="bg-white border border-[#E2E8F0] shadow-sm rounded-md mb-2 p-2 sm:p-3 sm:mb-3 shrink-0">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 sm:gap-3 mb-4 border-b border-[#E2E8F0] pb-3">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b border-[#E2E8F0] pb-3">
           
-          <div className="flex items-center gap-3">
-            <div className="bg-[#10B981] text-white p-2.5 rounded-lg shadow-sm">
-              <Truck size={20} />
+          <div className="flex items-center gap-2">
+            <div className="bg-[#10B981] text-white p-2 rounded-lg shadow-sm shrink-0">
+              <Truck size={18} />
             </div>
             <div>
-              <h1 className="font-bold text-[14px] md:text-[16px] text-[#0F172A] uppercase tracking-wide truncate max-w-[230px] md:max-w-none">
-                SUPPLIER PAYMENTS & OVERALL PAYABLES CONSOLIDATION REPORT
+              <h1 className="font-bold text-[13px] sm:text-[15px] text-[#0F172A] uppercase tracking-wide">
+                SUPPLIER PAYMENTS & PAYABLES REPORT
               </h1>
-              <p className="text-xs text-black font-bold hidden md:block">Complete overview of supplier pending payables, total payments, and ledger balances</p>
+              <p className="text-xs text-black font-bold hidden sm:block">Complete overview of supplier pending payables, total payments, and ledger balances</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide w-full pb-1 -mx-2 px-2 sm:mx-0 sm:px-0">
-            <div className="bg-gray-100 p-1 rounded-md flex items-center gap-1 border border-gray-200 shrink-0">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="bg-gray-100 p-1 rounded-md flex items-center gap-1 border border-gray-200 flex-1 sm:flex-none">
               <button
                 type="button"
                 onClick={() => { setReportMode('consolidation'); setCurrentPage(1); }}
-                className={`px-3 py-1.5 text-[12px] font-bold rounded transition-colors ${
-                  reportMode === 'consolidation' ? 'bg-[#0F172A] text-white shadow-sm' : 'text-black font-bold hover:text-black hover:font-bold'
+                className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 text-[11px] sm:text-[12px] font-bold rounded transition-colors ${
+                  reportMode === 'consolidation' ? 'bg-[#0F172A] text-white shadow-sm' : 'text-black hover:text-black'
                 }`}
               >
-                Overall Pending Payables
+                Pending Payables
               </button>
               <button
                 type="button"
                 onClick={() => { setReportMode('history'); setCurrentPage(1); }}
-                className={`px-3 py-1.5 text-[12px] font-bold rounded transition-colors ${
-                  reportMode === 'history' ? 'bg-[#0F172A] text-white shadow-sm' : 'text-black font-bold hover:text-black hover:font-bold'
+                className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 text-[11px] sm:text-[12px] font-bold rounded transition-colors ${
+                  reportMode === 'history' ? 'bg-[#0F172A] text-white shadow-sm' : 'text-black hover:text-black'
                 }`}
               >
-                Payments History
+                Pay History
               </button>
             </div>
 
-            <button type="button" onClick={handleExcelExport} className="bg-[#10B981] hover:bg-[#059669] text-white px-3 py-1.5 rounded text-[12px] font-bold flex items-center gap-1.5 transition-colors shrink-0"
-            >
-              <Download size={14} /> <span className="hidden lg:inline">Export Excel</span>
+            <button type="button" onClick={handleExcelExport} className="bg-[#10B981] hover:bg-[#059669] text-white px-3 py-1.5 rounded text-[12px] font-bold flex items-center gap-1.5 transition-colors shrink-0">
+              <Download size={14} /> <span className="hidden sm:inline">Excel</span>
             </button>
-            <button type="button" onClick={handlePdfExport} className="bg-[#EF4444] hover:bg-[#DC2626] text-white px-3 py-1.5 rounded text-[12px] font-bold flex items-center gap-1.5 transition-colors shrink-0"
-            >
-              <Download size={14} /> <span className="hidden lg:inline">Export PDF</span>
+            <button type="button" onClick={handlePdfExport} className="bg-[#EF4444] hover:bg-[#DC2626] text-white px-3 py-1.5 rounded text-[12px] font-bold flex items-center gap-1.5 transition-colors shrink-0">
+              <Download size={14} /> <span className="hidden sm:inline">PDF</span>
             </button>
           </div>
         </div>
@@ -351,86 +348,55 @@ const SupplierPaymentsReport = () => {
         </div>
 
 
-        {/* Filter Controls */}
-        <div className={`flex-wrap md:flex-nowrap items-end gap-2 md:gap-3 pt-2 md:border-t md:border-dashed md:border-[#E2E8F0] ${isFilterOpen ? 'fixed inset-0 z-[100] m-0 bg-white p-3 overflow-y-auto flex flex-col' : 'hidden md:flex'}`}>
-          {isFilterOpen && (
-            <div className="flex justify-between items-center pb-3 border-b border-[#E2E8F0] mb-3 md:hidden w-full">
-              <h3 className="font-bold text-[15px] text-[#1E3A8A]">Advanced Filters</h3>
-              <button onClick={() => setIsFilterOpen(false)} className="p-1.5 bg-red-50 text-red-600 rounded-full"><X size={16} /></button>
+                {/* Filters - always visible, fully responsive */}
+        <div className="bg-white p-2 sm:p-3 border-b border-[#E6E9ED] shrink-0">
+          <div className="flex flex-col gap-2">
+            {/* Row 1: Search + Reset */}
+            <div className="flex gap-2 items-center">
+              <div className="flex-1">
+                <SearchableSelect
+                  options={searchOptions}
+                  value={searchTerm}
+                  onChange={(val) => setSearchTerm(val || '')}
+                  placeholder="Search supplier..."
+                  className="w-full"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => { setSearchTerm(''); setStartDate(''); setEndDate(''); }}
+                className={`shrink-0 px-3 py-[9px] rounded flex items-center gap-1 transition-colors border text-[12px] font-bold h-[38px] ${!isReset ? "bg-white text-red-600 border-red-200 hover:bg-red-50" : "bg-white text-black border-[#E5E7EB] hover:bg-gray-50"}`}
+              >
+                <RefreshCw size={13} /> <span className="hidden sm:inline">Reset</span>
+              </button>
             </div>
-          )}
-          <div className="hidden md:block col-span-2 md:col-span-1 md:flex-1 md:min-w-[200px]">
-            <label className="block text-[12px] font-bold text-black mb-1 whitespace-nowrap">Search Supplier</label>
-            <SearchableSelect
-              options={searchOptions}
-              value={searchTerm}
-              onChange={(val) => setSearchTerm(val || '')}
-              placeholder="Search..."
-              className="w-full"
-            />
+            {/* Row 2: Dates + Entries */}
+            <div className="grid grid-cols-3 gap-2">
+              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-2 py-1.5 border border-[#E5E7EB] rounded text-[12px] outline-none focus:border-[#3B82F6] h-[38px]" />
+              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-2 py-1.5 border border-[#E5E7EB] rounded text-[12px] outline-none focus:border-[#3B82F6] h-[38px]" />
+              <select value={entriesPerPage} onChange={(e) => { setEntriesPerPage(Number(e.target.value)); setCurrentPage(1); }} className="w-full px-2 py-1.5 border border-[#E5E7EB] rounded text-[12px] outline-none bg-white focus:border-[#3B82F6] h-[38px]">
+                <option value={10}>10 / page</option>
+                <option value={25}>25 / page</option>
+                <option value={50}>50 / page</option>
+                <option value={100}>100 / page</option>
+              </select>
+            </div>
           </div>
-          <div className="w-full md:w-[130px] shrink-0">
-            <label className="block text-[12px] font-bold text-black font-bold mb-1">From Date</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-2 py-1.5 border border-[#CBD5E1] rounded text-[13px] outline-none focus:border-[#3B82F6] bg-white h-[34px]"
-            />
-          </div>
-          <div className="w-full md:w-[130px] shrink-0">
-            <label className="block text-[12px] font-bold text-black font-bold mb-1">To Date</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-2 py-1.5 border border-[#CBD5E1] rounded text-[13px] outline-none focus:border-[#3B82F6] bg-white h-[34px]"
-            />
-          </div>
-          <div className="w-full md:w-[100px] shrink-0">
-            <label className="block text-[12px] font-bold text-black font-bold mb-1">Entries</label>
-            <select
-              value={entriesPerPage}
-              onChange={(e) => {
-                setEntriesPerPage(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              className="w-full px-2 py-1.5 border border-[#CBD5E1] rounded text-[13px] outline-none focus:border-[#3B82F6] bg-white h-[34px]"
-            >
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-          </div>
-          <div className="col-span-2 md:col-span-1 flex flex-wrap md:flex-nowrap items-center gap-1.5 shrink-0 pb-1 sm:pb-0">
-            <button type="button" onClick={() => handleDatePreset('today')} className="text-[11px] font-bold bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#1E40AF] px-2.5 py-1.5 rounded transition-colors h-[34px] whitespace-nowrap">Today</button>
-            <button type="button" onClick={() => handleDatePreset('thisMonth')} className="text-[11px] font-bold bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#1E40AF] px-2.5 py-1.5 rounded transition-colors h-[34px] whitespace-nowrap">This Month</button>
-            <button
-              type="button"
-              onClick={() => { setSearchTerm(''); setStartDate(''); setEndDate(''); }}
-              className={`px-3 py-1.5 border rounded text-[12px] font-bold flex items-center gap-1 transition-colors h-[34px] whitespace-nowrap ${
-                !isReset 
-                  ? 'bg-white text-red-600 border-red-200 hover:bg-red-50' 
-                  : 'bg-white text-black font-bold border-[#CBD5E1] hover:bg-gray-100'
-              }`}
-            >
-              <RefreshCw size={12} /> Reset
-            </button>
-          </div>
+        </div>
+      </div>
         </div>
       </div>
 
       {/* Main Table Section */}
       <div className="bg-white border border-[#E2E8F0] shadow-sm rounded-md overflow-hidden flex flex-col flex-1">
-        <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-4 py-3 flex justify-between items-center shrink-0">
-          <div className="flex items-center gap-2 text-black font-bold">
-            <FileText size={16} />
-            <h2 className="font-bold text-[13px] tracking-wide text-black font-bold uppercase">
+        <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-3 py-2 flex justify-between items-center shrink-0 gap-2">
+          <div className="flex items-center gap-1.5 text-black font-bold min-w-0">
+            <FileText size={14} className="shrink-0" />
+            <h2 className="font-bold text-[11px] sm:text-[13px] tracking-wide text-black uppercase truncate">
               {reportMode === 'consolidation' ? 'OVERALL SUPPLIER PAYABLES CONSOLIDATION' : 'SUPPLIER PAYMENTS HISTORY'}
             </h2>
           </div>
-          <span className="text-xs font-bold text-black font-bold">{activeList.length} Records Found</span>
+          <span className="text-[11px] font-bold text-black whitespace-nowrap shrink-0">{activeList.length} Records Found</span>
         </div>
 
         <div id="supplier-payments-report-export" className="flex-1 flex flex-col min-h-0 overflow-hidden p-4">
@@ -554,6 +520,9 @@ const SupplierPaymentsReport = () => {
 };
 
 export default SupplierPaymentsReport;
+
+
+
 
 
 
