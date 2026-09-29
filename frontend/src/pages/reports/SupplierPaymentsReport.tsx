@@ -350,33 +350,6 @@ const SupplierPaymentsReport = () => {
           </div>
         </div>
 
-                        {/* Mobile Quick Bar */}
-        <div className="md:hidden flex flex-col gap-2 pt-2 border-t border-dashed border-[#E2E8F0]">
-          <div className="w-full">
-            <SearchableSelect
-              options={[
-                { value: 'all', label: 'All / Clear Search' },
-                ...suppliers.map((s: any) => ({ value: s.id.toString(), label: s.name }))
-              ]}
-              value={searchTerm}
-              onChange={setSearchTerm}
-              placeholder="Search supplier..."
-            />
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex gap-2 flex-1">
-              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-1/2 px-2 py-1.5 border border-[#CBD5E1] rounded text-[12px] font-bold text-black bg-white" />
-              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-1/2 px-2 py-1.5 border border-[#CBD5E1] rounded text-[12px] font-bold text-black bg-white" />
-            </div>
-            <button onClick={() => setIsFilterOpen(true)} className="flex items-center gap-1 bg-[#10B981] text-white px-3 py-1.5 rounded text-[12px] font-bold shrink-0">
-               <Filter size={14} /> Filter
-            </button>
-          </div>
-        </div>
-          <button onClick={() => setIsFilterOpen(true)} className="flex items-center gap-1 bg-black text-white px-3 py-1.5 rounded text-[12px] font-bold shrink-0">
-             Filter
-          </button>
-        </div>
 
         {/* Filter Controls */}
         <div className={`flex-wrap md:flex-nowrap items-end gap-2 md:gap-3 pt-2 md:border-t md:border-dashed md:border-[#E2E8F0] ${isFilterOpen ? 'fixed inset-0 z-[100] m-0 bg-white p-3 overflow-y-auto flex flex-col' : 'hidden md:flex'}`}>
