@@ -107,56 +107,16 @@ const ExpenseReport = () => {
     <div className="absolute inset-0 bg-[#F8FAFC] flex flex-col font-sans overflow-y-auto lg:overflow-hidden z-10 p-2 sm:p-4">
       <ReportTabs />
 
-      {/* Mobile Quick Bar */}
-      <div className="md:hidden flex items-center gap-2 mb-2 shrink-0">
-        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="flex-1 min-w-0 px-2 py-1.5 border border-[#CBD5E1] rounded text-[12px] font-bold text-black" />
-        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="flex-1 min-w-0 px-2 py-1.5 border border-[#CBD5E1] rounded text-[12px] font-bold text-black" />
-        <div className="relative shrink-0">
-          <Search size={13} className="absolute left-2 top-2 text-gray-400" />
-          <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-6 pr-2 py-1.5 border border-[#CBD5E1] rounded text-[12px] font-bold text-black w-24" />
+            {/* Mobile Quick Bar */}
+      <div className="md:hidden flex items-center justify-between gap-2 mb-2 shrink-0">
+        <div className="flex gap-2 flex-1">
+          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-1/2 px-2 py-1.5 border border-[#CBD5E1] rounded text-[12px] font-bold text-black" />
+          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-1/2 px-2 py-1.5 border border-[#CBD5E1] rounded text-[12px] font-bold text-black" />
         </div>
-        <button type="button" onClick={handleExcelExport} className="shrink-0 bg-[#10B981] text-white p-1.5 rounded"><Download size={14} /></button>
-        <button onClick={() => setIsFilterOpen(true)} className="shrink-0 bg-[#10B981] text-white p-1.5 rounded"><Filter size={14} /></button>
+        <button onClick={() => setIsFilterOpen(true)} className="flex items-center gap-1 shrink-0 bg-[#10B981] text-white px-3 py-1.5 rounded text-[12px] font-bold">
+          <Filter size={14} /> Filter
+        </button>
       </div>
-
-      {/* Filter Section */}
-      <div className={`bg-white border border-[#E2E8F0] shadow-sm rounded-md mb-2 p-3 sm:mb-3 shrink-0 ${isFilterOpen ? 'fixed inset-0 z-[100] m-0 rounded-none overflow-y-auto' : 'hidden md:block'}`}>
-        <div className="flex justify-between items-center pb-3 border-b border-[#E2E8F0] mb-3 md:hidden">
-          <h3 className="font-bold text-[15px] text-[#1E3A8A]">Advanced Filters</h3>
-          <button onClick={() => setIsFilterOpen(false)} className="p-1.5 bg-red-50 text-red-600 rounded-full"><X size={16} /></button>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 items-end mb-2 sm:mb-3">
-          <div>
-            <label className="flex items-center gap-1 text-[12px] text-black font-bold mb-1">From Date</label>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full px-3 py-1.5 border border-[#CBD5E1] rounded outline-none text-[13px] text-black font-bold bg-white focus:border-[#3B82F6]" />
-          </div>
-          <div>
-            <label className="flex items-center gap-1 text-[12px] text-black font-bold mb-1">To Date</label>
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full px-3 py-1.5 border border-[#CBD5E1] rounded outline-none text-[13px] text-black font-bold bg-white focus:border-[#3B82F6]" />
-          </div>
-          <div>
-            <label className="flex items-center gap-1 text-[12px] text-black font-bold mb-1">Expense Category</label>
-            <SearchableSelect
-              options={[{ value: '', label: 'All Categories' }, ...categories.map((c: any) => ({ value: c.id, label: c.name }))]}
-              value={categoryId}
-              onChange={(val) => setCategoryId(val || '')}
-              placeholder="All Categories"
-            />
-          </div>
-          <div>
-            <label className="flex items-center gap-1 text-[12px] text-black font-bold mb-1">Search Notes</label>
-            <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search notes..." className="w-full px-3 py-1.5 border border-[#CBD5E1] rounded outline-none text-[13px] text-black font-bold focus:border-[#3B82F6]" />
-          </div>
-          <div>
-            <label className="flex items-center gap-1 text-[12px] text-black font-bold mb-1">Entries Per Page</label>
-            <select value={entriesPerPage} onChange={(e) => { setEntriesPerPage(Number(e.target.value)); setCurrentPage(1); }} className="w-full px-3 py-1.5 border border-[#CBD5E1] rounded outline-none text-[13px] text-black font-bold bg-white focus:border-[#3B82F6]">
-              <option value={10}>10 Entries</option>
-              <option value={25}>25 Entries</option>
-              <option value={50}>50 Entries</option>
-              <option value={100}>100 Entries</option>
-            </select>
-          </div>
-        </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center pt-2 border-t border-dashed border-[#E2E8F0] gap-3 md:gap-0">
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -178,19 +138,23 @@ const ExpenseReport = () => {
 
       {/* Report Table Section */}
       <div className="bg-white border border-[#E2E8F0] shadow-sm rounded-md overflow-hidden flex flex-col flex-1">
-        <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-4 py-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-0 shrink-0">
+        <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] px-3 py-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0 shrink-0">
           <div className="flex items-center gap-2 text-black font-bold">
             <FileText size={16} />
             <h2 className="font-bold text-[13px] tracking-wide text-black">EXPENSE TRANSACTIONS REPORT</h2>
           </div>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={handleExcelExport} className="bg-[#10B981] hover:bg-[#059669] text-white px-2 py-1.5 rounded flex items-center gap-1.5 text-[12px] font-bold transition-colors">
-              <Download size={14} /> <span className="hidden lg:inline">Export Excel</span>
-            </button>
-            <button type="button" onClick={handlePdfExport} className="bg-[#EF4444] hover:bg-[#DC2626] text-white px-2 py-1.5 rounded flex items-center gap-1.5 text-[12px] font-bold transition-colors">
-              <Download size={14} /> <span className="hidden lg:inline">Export PDF</span>
-            </button>
-          </div>
+                      <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+              <div className="relative flex-1 min-w-[120px]">
+                <Search size={14} className="absolute left-2.5 top-2.5 text-black font-bold" />
+                <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Quick search..." className="w-full pl-8 pr-3 py-1.5 border border-[#CBD5E1] rounded outline-none text-[12px] md:w-48 focus:border-[#3B82F6]" />
+              </div>
+              <button type="button" onClick={handleExcelExport} className="shrink-0 bg-[#10B981] hover:bg-[#059669] text-white px-3 py-1.5 rounded flex items-center justify-center gap-1.5 text-[12px] font-bold whitespace-nowrap transition-colors">
+                <Download size={14} /> <span className="hidden lg:inline">Export Excel</span>
+              </button>
+              <button type="button" onClick={handlePdfExport} className="shrink-0 bg-[#EF4444] hover:bg-[#DC2626] text-white px-3 py-1.5 rounded flex items-center justify-center gap-1.5 text-[12px] font-bold whitespace-nowrap transition-colors">
+                <Download size={14} /> <span className="hidden lg:inline">Export PDF</span>
+              </button>
+            </div>
         </div>
 
         <div id="expense-report-export" className="flex-1 flex flex-col min-h-0 overflow-hidden">
@@ -260,3 +224,4 @@ const ExpenseReport = () => {
 };
 
 export default ExpenseReport;
+
