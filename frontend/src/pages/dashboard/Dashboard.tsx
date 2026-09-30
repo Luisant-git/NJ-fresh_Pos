@@ -73,6 +73,8 @@ const Dashboard = () => {
   const [filterStartDate, setFilterStartDate] = useState(getMalaysiaDate());
   const [filterEndDate, setFilterEndDate] = useState(getMalaysiaDate());
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [supplierSearch, setSupplierSearch] = useState('');
+  const [customerSearch, setCustomerSearch] = useState('');
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentDateTime(new Date()), 60000);
@@ -165,6 +167,19 @@ const Dashboard = () => {
               </Link>
             </div>
           </div>
+          {/* Supplier Search Bar */}
+          <div className="px-4 py-2 border-b border-gray-100 bg-white">
+            <div className="relative">
+              <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input
+                type="text"
+                placeholder="Search supplier or bill..."
+                value={supplierSearch}
+                onChange={e => setSupplierSearch(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-[12px] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-300 bg-gray-50"
+              />
+            </div>
+          </div>
           <div className="flex-1 p-0 h-[350px] overflow-y-auto custom-scrollbar bg-white">
             <table className="w-full text-left text-[12px]">
               <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] sticky top-0">
@@ -174,7 +189,15 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.unpaidSupplierBills?.length > 0 ? data.unpaidSupplierBills.map((bill: any, idx: number) => (
+                {data.unpaidSupplierBills?.filter((bill: any) =>
+                  !supplierSearch ||
+                  bill.entityName?.toLowerCase().includes(supplierSearch.toLowerCase()) ||
+                  bill.entryNo?.toLowerCase().includes(supplierSearch.toLowerCase())
+                ).length > 0 ? data.unpaidSupplierBills.filter((bill: any) =>
+                  !supplierSearch ||
+                  bill.entityName?.toLowerCase().includes(supplierSearch.toLowerCase()) ||
+                  bill.entryNo?.toLowerCase().includes(supplierSearch.toLowerCase())
+                ).map((bill: any, idx: number) => (
                   <tr key={idx} className="border-b border-[#E2E8F0] hover:bg-[#F8FAFC]">
                     <td className="px-4 py-3">
                       <div className="font-bold text-black font-bold break-words">{bill.entityName}</div>
@@ -192,7 +215,7 @@ const Dashboard = () => {
                 )) : (
                   <tr>
                     <td colSpan={2} className="px-4 py-8 text-center text-black font-bold">
-                      No pending supplier bills
+                      {supplierSearch ? 'No results found' : 'No pending supplier bills'}
                     </td>
                   </tr>
                 )}
@@ -216,6 +239,19 @@ const Dashboard = () => {
               </Link>
             </div>
           </div>
+          {/* Customer Search Bar */}
+          <div className="px-4 py-2 border-b border-gray-100 bg-white">
+            <div className="relative">
+              <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input
+                type="text"
+                placeholder="Search customer or bill..."
+                value={customerSearch}
+                onChange={e => setCustomerSearch(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-[12px] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-300 bg-gray-50"
+              />
+            </div>
+          </div>
           <div className="flex-1 p-0 h-[350px] overflow-y-auto custom-scrollbar bg-white">
             <table className="w-full text-left text-[12px]">
               <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] sticky top-0">
@@ -225,7 +261,15 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.unpaidCustomerBills?.length > 0 ? data.unpaidCustomerBills.map((bill: any, idx: number) => (
+                {data.unpaidCustomerBills?.filter((bill: any) =>
+                  !customerSearch ||
+                  bill.entityName?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                  bill.entryNo?.toLowerCase().includes(customerSearch.toLowerCase())
+                ).length > 0 ? data.unpaidCustomerBills.filter((bill: any) =>
+                  !customerSearch ||
+                  bill.entityName?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                  bill.entryNo?.toLowerCase().includes(customerSearch.toLowerCase())
+                ).map((bill: any, idx: number) => (
                   <tr key={idx} className="border-b border-[#E2E8F0] hover:bg-[#F8FAFC]">
                     <td className="px-4 py-3">
                       <div className="font-bold text-black font-bold break-words">{bill.entityName}</div>
@@ -243,7 +287,7 @@ const Dashboard = () => {
                 )) : (
                   <tr>
                     <td colSpan={2} className="px-4 py-8 text-center text-black font-bold">
-                      No pending customer bills
+                      {customerSearch ? 'No results found' : 'No pending customer bills'}
                     </td>
                   </tr>
                 )}
