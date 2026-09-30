@@ -128,8 +128,8 @@ const Dashboard = () => {
                 {data.lowStockProducts.map((product: any, idx: number) => (
                   <li key={idx} className="p-4 hover:bg-gray-50 transition-colors flex justify-between items-center">
                     <div>
-                      <p className="text-[13px] font-bold text-black font-bold break-words pr-2">{product.itemName}</p>
-                      <p className="text-[11px] font-bold text-gray-500 font-bold mt-1">Code: {product.itemCode}</p>
+                      <p className="text-[13px] font-bold text-black font-bold break-words pr-2">{product.name}</p>
+                      <p className="text-[11px] font-bold text-gray-500 font-bold mt-1">Code: {product.code}</p>
                     </div>
                     <div className="text-right flex-shrink-0">
                       <span className="inline-flex items-center justify-center px-2.5 py-1 bg-rose-100 text-rose-700 text-[12px] font-bold rounded-full font-bold">
