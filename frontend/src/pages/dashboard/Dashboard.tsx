@@ -10,7 +10,8 @@ import {
   Users,
   BarChart3,
   LayoutDashboard,
-  ListTodo
+  ListTodo,
+  ArrowRight
 } from 'lucide-react';
 import api from '../../services/api';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -50,7 +51,7 @@ const StatCard = ({ title, value, icon: Icon, colorClass, desc, layout = 'topbar
       {reportUrl && (
         <div className="mt-2 pt-2 border-t border-gray-100 flex justify-end">
           <Link to={reportUrl} className="inline-flex items-center justify-center bg-blue-50 text-blue-700 px-3 py-1 rounded-md text-[11px] font-bold hover:bg-blue-600 hover:text-white transition-colors duration-300">
-            View Report <span aria-hidden="true" className="ml-1 transition-transform duration-300 group-hover:translate-x-0.5">&rarr;</span>
+            View Report <span aria-hidden="true" className="ml-1 transition-transform duration-300 group-hover:translate-x-0.5"><ArrowRight size={14} className="ml-1.5" /></span>
           </Link>
         </div>
       )}
