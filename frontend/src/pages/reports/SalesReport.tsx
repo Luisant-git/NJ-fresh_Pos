@@ -63,8 +63,11 @@ const SalesReport = () => {
           customerName: s.customer?.name || 'Walk-in',
           paymentMode: s.paymentMode?.name || 'Cash',
           noOfItems: s.items?.length || 0,
+          noOfBirds: s.items?.reduce((sum: number, item: any) => sum + (Number(item.noOfBirds) || 0), 0) || 0,
           netPayable: formatCurrency(s.grandTotal || 0),
           rawTotalAmount: s.grandTotal || 0,
+          rawNoOfBirds: s.items?.reduce((sum: number, item: any) => sum + (Number(item.noOfBirds) || 0), 0) || 0,
+          rawNoOfItems: s.items?.length || 0,
           items: s.items || [],
         };
       });
@@ -80,6 +83,8 @@ const SalesReport = () => {
     : sales;
 
   const totalSalesAmount = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.rawTotalAmount) || 0), 0);
+  const totalBirds = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.rawNoOfBirds) || 0), 0);
+  const totalItems = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.rawNoOfItems) || 0), 0);
 
   const totalPages = Math.ceil(filteredSales.length / entriesPerPage);
   const paginatedSales = filteredSales.slice((currentPage - 1) * entriesPerPage, currentPage * entriesPerPage);
@@ -249,14 +254,16 @@ const SalesReport = () => {
                   'Customer Name': s.customerName,
                   'Payment Mode': s.paymentMode,
                   'No. of Items': s.noOfItems,
+                  'No. of Birds': s.noOfBirds,
                   'Total Amount': s.netPayable
                 }));
                 exportData.push({
                   'Invoice No': '',
                   'Date': '',
                   'Customer Name': '',
-                  'Payment Mode': '',
-                  'No. of Items': 'TOTAL AMOUNT:',
+                  'Payment Mode': 'TOTAL:',
+                  'No. of Items': totalItems,
+                  'No. of Birds': totalBirds,
                   'Total Amount': formatCurrency(totalSalesAmount)
                 });
                 exportToExcel(exportData, `Sales_Report_${fromDate}_to_${toDate}`, {
@@ -277,14 +284,16 @@ const SalesReport = () => {
                   { header: 'Customer Name', dataKey: 'customerName' },
                   { header: 'Payment Mode', dataKey: 'paymentMode' },
                   { header: 'No. of Items', dataKey: 'noOfItems' },
+                  { header: 'No. of Birds', dataKey: 'noOfBirds' },
                   { header: 'Total Amount', dataKey: 'netPayable' },
                 ];
                 const pdfData = [...filteredSales, {
                   invoiceNo: '',
                   date: '',
                   customerName: '',
-                  paymentMode: '',
-                  noOfItems: 'TOTAL AMOUNT:',
+                  paymentMode: 'TOTAL:',
+                  noOfItems: totalItems.toString(),
+                  noOfBirds: totalBirds.toString(),
                   netPayable: formatCurrency(totalSalesAmount)
                 }];
                 exportTableToPdf(cols, pdfData, `Sales_Report_${fromDate}_to_${toDate}`, 'Sales Report', settings?.shopName, filteredSales.length);
@@ -313,6 +322,7 @@ const SalesReport = () => {
                 <th className="px-4 py-3 border-r border-[#1E293B]">Customer Name</th>
                 <th className="px-4 py-3 border-r border-[#1E293B] text-center">Payment Mode</th>
                 <th className="px-4 py-3 border-r border-[#1E293B] text-center">No. of Items</th>
+                <th className="px-4 py-3 border-r border-[#1E293B] text-center">No. of Birds</th>
                 <th className="px-4 py-3 border-r border-[#1E293B] text-center">Total Amount</th>
                 <th data-html2canvas-ignore="true" className="px-4 py-3 text-center w-40">Action</th>
               </tr>
@@ -321,7 +331,7 @@ const SalesReport = () => {
               {isLoading ? (
                 <TableLoader columns={9} />
               ) : filteredSales.length === 0 ? (
-                <tr><td colSpan={9} className="text-center p-6 text-black font-bold">No sales records found.</td></tr>
+                <tr><td colSpan={10} className="text-center p-6 text-black font-bold">No sales records found.</td></tr>
               ) : (
                 paginatedSales.map((s: any, index: number) => (
                   <React.Fragment key={s.id}>
@@ -338,7 +348,8 @@ const SalesReport = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold text-black font-bold">{s.noOfItems}</td>
-                                        <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold text-[#3B82F6]">{s.netPayable}</td>
+                    <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold text-black font-bold">{s.noOfBirds === 0 ? '0' : s.noOfBirds}</td>
+                    <td className="px-4 py-3 border-r border-[#E2E8F0] text-center font-bold text-[#3B82F6]">{s.netPayable}</td>
                     <td data-html2canvas-ignore="true" className="px-4 py-3 text-center">
                       <div className="flex justify-center items-center gap-2">
                         <button type="button" 
