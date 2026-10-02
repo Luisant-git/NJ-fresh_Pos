@@ -15,7 +15,7 @@ export class PurchasesService {
         data: {
           invoiceNo: createPurchaseDto.invoiceNo,
           supplierInvoiceNo: createPurchaseDto.supplierInvoiceNo,
-          date: new Date(createPurchaseDto.date),
+          date: new Date(`${createPurchaseDto.date}T00:00:00+08:00`),
           supplierId: createPurchaseDto.supplierId,
           paymentModeId: createPurchaseDto.paymentModeId,
           subtotal: createPurchaseDto.subtotal,
@@ -68,7 +68,7 @@ export class PurchasesService {
         // Add ledger entry
         await tx.stockTransaction.create({
           data: {
-            date: new Date(createPurchaseDto.date),
+            date: new Date(`${createPurchaseDto.date}T00:00:00+08:00`),
             productId: item.productId,
             type: TransactionType.PURCHASE,
             quantityIn: item.quantity,
@@ -90,11 +90,9 @@ export class PurchasesService {
     const where: any = {};
     if (query?.fromDate || query?.toDate) {
       where.date = {};
-      if (query.fromDate) where.date.gte = new Date(query.fromDate);
+      if (query.fromDate) where.date.gte = new Date(`${`${query.fromDate}T00:00:00+08:00`}T00:00:00+08:00`);
       if (query.toDate) {
-        const toDate = new Date(query.toDate);
-        toDate.setHours(23, 59, 59, 999);
-        where.date.lte = toDate;
+        where.date.lte = new Date(`${query.toDate}T23:59:59.999+08:00`);
       }
     }
     if (query?.supplierId) {
@@ -257,7 +255,7 @@ export class PurchasesService {
         data: {
           invoiceNo: createPurchaseDto.invoiceNo || existingPurchase.invoiceNo,
           supplierInvoiceNo: createPurchaseDto.supplierInvoiceNo,
-          date: new Date(createPurchaseDto.date),
+          date: new Date(`${createPurchaseDto.date}T00:00:00+08:00`),
           supplierId: createPurchaseDto.supplierId,
           paymentModeId: createPurchaseDto.paymentModeId,
           subtotal: createPurchaseDto.subtotal,
@@ -307,7 +305,7 @@ export class PurchasesService {
 
         await tx.stockTransaction.create({
           data: {
-            date: new Date(createPurchaseDto.date),
+            date: new Date(`${createPurchaseDto.date}T00:00:00+08:00`),
             productId: item.productId,
             type: TransactionType.PURCHASE,
             quantityIn: item.quantity,
