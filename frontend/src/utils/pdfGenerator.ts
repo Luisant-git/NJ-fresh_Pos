@@ -100,7 +100,7 @@ export const generateNativePdf = (sale: any, settings: any): string => {
   // Notes
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  const notesText = "Note:\n1. All Cheques should be crossed and made payable to NJ FRESH AND FROZEN SDN BHD\n2. ACCOUNT DETAILS:\n     NJ FRESH AND FROZEN SDN BHD\n     ACCOUNT NO- 21419200050230, BANK NAME: RHB bank\n3. Goods sold are neither returnable nor refundable. Otherwise a cancellation fee of 20% on the purchase price will be imposed";
+  const notesText = "Note:\r\n1. All Cheques should be crossed and made payable to NJ FRESH AND FROZEN SDN BHD\r\n2. ACCOUNT DETAILS:\r\n     NJ FRESH AND FROZEN SDN BHD\r\n     ACCOUNT NO- 21419200050230, BANK NAME: RHB bank\r\n3. Goods sold are neither returnable nor refundable. Otherwise a cancellation fee of 20% on the purchase price will be imposed";
   const splitNotes = doc.splitTextToSize(notesText, 110);
   doc.text(splitNotes, 14, finalY + 10);
   
@@ -139,23 +139,24 @@ export const generateBillByBillPdf = (companyName: string, entityName: string, e
   doc.setFont("helvetica", "normal");
   doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 37);
   
-  const head = [['Entry / Inv No', 'Bill Date', 'Bill Total', entityType === 'Customer' ? 'Sales Returns' : 'Pur. Returns', entityType === 'Customer' ? 'Received Amount' : 'Paid Amount', 'Pending Balance']];
+  const head = [['Type', 'Document No.', 'Date', 'Reference No.', 'Amount', 'Outstanding']];
+  const typeStr = entityType === 'Customer' ? 'INV' : 'PUR';
   
   const body = bills.map(b => [
+    typeStr,
     b.entryNo || '',
     getMalaysiaDateStr(b.date),
+    '-',
     Number(b.total).toFixed(2),
-    Number(b.returned || 0).toFixed(2),
-    Number(b.received || b.paid || 0).toFixed(2),
     Number(b.pending).toFixed(2)
   ]);
   
   body.push([
+    '',
     'TOTAL',
     '',
+    '',
     Number(totals.total).toFixed(2),
-    Number(totals.returned).toFixed(2),
-    Number(totals.received || totals.paid).toFixed(2),
     Number(totals.pending).toFixed(2)
   ]);
 
@@ -168,8 +169,7 @@ export const generateBillByBillPdf = (companyName: string, entityName: string, e
     styles: { fontSize: 10, cellPadding: 3 },
     columnStyles: {
       0: { fontStyle: 'bold' },
-      2: { halign: 'right' },
-      3: { halign: 'right' },
+      1: { fontStyle: 'bold' },
       4: { halign: 'right' },
       5: { halign: 'right', fontStyle: 'bold' }
     },
@@ -179,25 +179,6 @@ export const generateBillByBillPdf = (companyName: string, entityName: string, e
           data.cell.styles.fontStyle = 'bold';
           data.cell.styles.fillColor = [226, 232, 240]; // Slate 200 for highlight
           data.cell.styles.textColor = [0, 0, 0]; // Explicitly black
-        } else {
-          if (entityType === 'Customer') {
-            if (data.column.index === 3) data.cell.styles.textColor = [225, 29, 72]; // Rose-600
-            if (data.column.index === 4) data.cell.styles.textColor = [16, 185, 129]; // Emerald-500
-            if (data.column.index === 5) data.cell.styles.textColor = [5, 150, 105]; // Emerald-600
-          } else {
-            if (data.column.index === 3) data.cell.styles.textColor = [16, 185, 129]; // Emerald-500
-            if (data.column.index === 4) data.cell.styles.textColor = [16, 185, 129]; // Emerald-500
-            if (data.column.index === 5) data.cell.styles.textColor = [225, 29, 72]; // Rose-600
-          }
-        }
-      }
-      if (data.section === 'head') {
-        if (entityType === 'Customer') {
-          if (data.column.index === 3) data.cell.styles.textColor = [225, 29, 72];
-          if (data.column.index === 5) data.cell.styles.textColor = [5, 150, 105];
-        } else {
-          if (data.column.index === 3) data.cell.styles.textColor = [16, 185, 129];
-          if (data.column.index === 5) data.cell.styles.textColor = [225, 29, 72];
         }
       }
     }
