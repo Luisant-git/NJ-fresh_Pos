@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useSettings } from '../../contexts/SettingsContext';
 import TableLoader from '../../components/TableLoader';
+import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
 
 const ChequeEntryPage = () => {
   const { formatCurrency, settings } = useSettings();
@@ -32,6 +33,10 @@ const ChequeEntryPage = () => {
   });
   const [filterEndDate, setFilterEndDate] = useState(() => getMalaysiaDateStr());
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Delete Modal State
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [chequeToDelete, setChequeToDelete] = useState<number | null>(null);
 
   // Fetch Cheques List with date filter
   const { data: cheques = [], isLoading: historyLoading } = useQuery({
@@ -103,16 +108,25 @@ const ChequeEntryPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chequeEntries'] });
       toast.success('Cheque entry deleted successfully');
+      setDeleteModalOpen(false);
+      setChequeToDelete(null);
     },
     onError: (err: any) => {
       toast.error('Failed to delete cheque entry');
       console.error(err);
+      setDeleteModalOpen(false);
+      setChequeToDelete(null);
     }
   });
 
-  const handleDelete = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this cheque entry?')) {
-      deleteMutation.mutate(id);
+  const handleDeleteClick = (id: number) => {
+    setChequeToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (chequeToDelete !== null) {
+      deleteMutation.mutate(chequeToDelete);
     }
   };
 
@@ -284,7 +298,7 @@ const ChequeEntryPage = () => {
                           </td>
                           <td className="p-2 text-center">
                             <button
-                              onClick={() => handleDelete(cheque.id)}
+                              onClick={() => handleDeleteClick(cheque.id)}
                               className="w-6 h-6 inline-flex items-center justify-center rounded-md bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors"
                               title="Delete Cheque"
                             >
@@ -307,6 +321,19 @@ const ChequeEntryPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal 
+        isOpen={deleteModalOpen}
+        title="Delete Cheque Entry"
+        message="Are you sure you want to delete this cheque entry? This action cannot be undone."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setDeleteModalOpen(false);
+          setChequeToDelete(null);
+        }}
+        isDeleting={deleteMutation.isPending}
+      />
     </div>
   );
 };

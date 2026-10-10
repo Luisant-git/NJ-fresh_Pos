@@ -9,6 +9,7 @@ import { exportToExcel } from '../../utils/exportExcel';
 import { exportTableToPdf, type PdfColumn } from '../../utils/exportPdf';
 import PaginationControls from '../../components/PaginationControls';
 import TableLoader from '../../components/TableLoader';
+import DeleteConfirmationModal from '../../components/DeleteConfirmationModal';
 
 const ChequeEntryReport = () => {
   const { formatCurrency, settings } = useSettings();
@@ -27,6 +28,10 @@ const ChequeEntryReport = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Delete Modal State
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [chequeToDelete, setChequeToDelete] = useState<number | null>(null);
   
   // Fetch Report Data
   const { data: cheques = [], isLoading } = useQuery({
@@ -50,16 +55,25 @@ const ChequeEntryReport = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chequeEntryReport'] });
       toast.success('Cheque entry deleted successfully');
+      setDeleteModalOpen(false);
+      setChequeToDelete(null);
     },
     onError: (err: any) => {
       toast.error('Failed to delete cheque entry');
       console.error(err);
+      setDeleteModalOpen(false);
+      setChequeToDelete(null);
     }
   });
 
-  const handleDelete = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this cheque entry?')) {
-      deleteMutation.mutate(id);
+  const handleDeleteClick = (id: number) => {
+    setChequeToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (chequeToDelete !== null) {
+      deleteMutation.mutate(chequeToDelete);
     }
   };
 
@@ -217,7 +231,7 @@ const ChequeEntryReport = () => {
                       <td className="px-4 py-3 border-r border-[#E2E8F0] text-right text-black font-bold">{formatCurrency(d.amount)}</td>
                       <td className="px-4 py-3 text-center">
                         <button
-                          onClick={() => handleDelete(d.id)}
+                          onClick={() => handleDeleteClick(d.id)}
                           className="w-7 h-7 inline-flex items-center justify-center rounded-md bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors"
                           title="Delete Cheque"
                         >
@@ -250,6 +264,19 @@ const ChequeEntryReport = () => {
 
         </div>
       </div>
+      
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal 
+        isOpen={deleteModalOpen}
+        title="Delete Cheque Entry"
+        message="Are you sure you want to delete this cheque entry? This action cannot be undone."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setDeleteModalOpen(false);
+          setChequeToDelete(null);
+        }}
+        isDeleting={deleteMutation.isPending}
+      />
     </div>
   );
 };
