@@ -553,3 +553,17 @@ model BankDeposit {
   updatedAt   DateTime @updatedAt
 }
 
+// ------------------------------------------------------
+// Cheque Entry Model
+// ------------------------------------------------------
+
+model ChequeEntry {
+  id          Int      @id @default(autoincrement())
+  chequeDate  DateTime
+  amount      Decimal
+  chequeFrom  String
+  chequeTo    String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

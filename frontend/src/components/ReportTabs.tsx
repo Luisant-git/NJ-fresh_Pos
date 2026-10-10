@@ -9,7 +9,8 @@ import {
   CornerDownLeft, 
   DollarSign,
   Users,
-  Building
+  Building,
+  CreditCard
 } from 'lucide-react';
 
 const ReportTabs = () => {
@@ -27,6 +28,7 @@ const ReportTabs = () => {
     { name: 'Customer Receipts & Overdue Report', path: '/reports/customer-receipts', icon: <Users size={14} /> },
     { name: 'Supplier Payments & Payables', path: '/reports/supplier-payments', icon: <Truck size={14} /> },
     { name: 'Bank Deposit Report', path: '/reports/bank-deposits', icon: <Building size={14} /> },
+    { name: 'Cheque Entry Report', path: '/reports/cheque-entries', icon: <CreditCard size={14} /> },
   ];
 
   return (

@@ -26,7 +26,7 @@ import { WhatsappModule } from './whatsapp/whatsapp.module';
 import { ReportsModule } from './reports/reports.module';
 import { RolesModule } from './roles/roles.module';
 import { BankDepositsModule } from './bank-deposits/bank-deposits.module';
-
+import { ChequeEntriesModule } from './cheque-entries/cheque-entries.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -60,7 +60,8 @@ import { join } from 'path';
     WhatsappModule,
     ReportsModule,
     RolesModule,
-    BankDepositsModule
+    BankDepositsModule,
+    ChequeEntriesModule
   ],
   controllers: [AppController],
   providers: [AppService],
